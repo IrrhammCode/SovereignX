@@ -88,7 +88,7 @@ export default function DashboardPage() {
       case 'vault':
         return (
           <div className="space-y-6">
-            <AssetBlockGrid />
+            <AssetBlockGrid balance={balance} />
             <OraclePanel />
           </div>
         );
@@ -107,7 +107,7 @@ export default function DashboardPage() {
           </div>
         );
       case 'audit':
-        return <AuditLogPanel />;
+        return <AuditLogPanel wallet={address} />;
       case 'settings':
         return <SettingsPanel />;
       default:

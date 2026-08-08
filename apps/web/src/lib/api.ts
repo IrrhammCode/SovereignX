@@ -62,3 +62,16 @@ export async function logTransferOnChain(entry: {
     body: JSON.stringify(entry),
   });
 }
+
+export async function fetchAuditReport(from?: string, to?: string) {
+  const params = new URLSearchParams();
+  if (from) params.set('from', from);
+  if (to) params.set('to', to);
+  const res = await fetch(`${API}/api/audit/report?${params}`);
+  if (!res.ok) throw new Error('Audit fetch failed');
+  return res.json();
+}
+
+export function getAuditDownloadUrl(format: 'json' | 'csv' = 'json') {
+  return `${API}/api/audit/report?format=${format === 'csv' ? 'csv' : 'download'}`;
+}

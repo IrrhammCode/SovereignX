@@ -3,16 +3,19 @@
 interface VisualAssetBlockProps {
   index: number;
   connected?: boolean;
+  dimmed?: boolean;
 }
 
 /** $10 fractionalized T-Bill visual block */
-export function VisualAssetBlock({ index, connected }: VisualAssetBlockProps) {
+export function VisualAssetBlock({ index, connected, dimmed }: VisualAssetBlockProps) {
   return (
     <div
       className={`group relative rounded-xl border p-3 transition-all ${
         connected
-          ? 'border-sovereign-glow/50 bg-sovereign-blue/50 shadow-node'
-          : 'border-sovereign-green/20 bg-sovereign-navy/80 hover:border-sovereign-green/40'
+          ? 'border-sovereign-glow/50 bg-sovereign-blue/50 shadow-vault'
+          : dimmed
+            ? 'border-sovereign-green/10 bg-sovereign-navy/40 opacity-50'
+            : 'border-sovereign-green/20 bg-sovereign-navy/80 hover:border-sovereign-green/40'
       }`}
     >
       {connected && (

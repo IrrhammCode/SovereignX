@@ -52,6 +52,11 @@ set('DIVIDEND_DISTRIBUTOR_ADDRESS', deployments.dividendDistributor);
 set('CVA_STABLECOIN_ADDRESS', deployments.cvaStablecoin);
 set('NEXT_PUBLIC_SOVX_TOKEN_ADDRESS', deployments.sovxToken);
 set('NEXT_PUBLIC_IDENTITY_REGISTRY_ADDRESS', deployments.identityRegistry);
+set('NEXT_PUBLIC_COMPLIANCE_ENGINE_ADDRESS', deployments.complianceEngine);
+set('NEXT_PUBLIC_DIVIDEND_DISTRIBUTOR_ADDRESS', deployments.dividendDistributor);
+
+const webDeploymentsPath = resolve(root, 'apps/web/public/deployments.json');
+writeFileSync(webDeploymentsPath, JSON.stringify(deployments, null, 2));
 
 writeFileSync(envPath, env);
-console.log('Saved deployments/monad.json and updated .env');
+console.log('Saved deployments/monad.json, apps/web/public/deployments.json, and updated .env');
