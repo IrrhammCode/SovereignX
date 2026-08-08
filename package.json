@@ -1,0 +1,18 @@
+{
+  "name": "sovereignx",
+  "version": "0.1.0",
+  "private": true,
+  "description": "SovereignX — fractionalized US T-Bills on Monad with ERC-3643 + Cleanverse compliance",
+  "scripts": {
+    "dev": "pnpm --parallel -r dev",
+    "dev:web": "pnpm --filter @sovereignx/web dev",
+    "dev:api": "pnpm --filter @sovereignx/api dev",
+    "dev:indexer": "pnpm --filter @sovereignx/indexer dev",
+    "build": "pnpm -r build",
+    "test:contracts": "cd contracts && forge test",
+    "deploy:testnet": "cd contracts && forge script script/Deploy.s.sol --rpc-url monad_testnet --broadcast"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

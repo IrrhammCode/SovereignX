@@ -1,0 +1,31 @@
+import type { CVIRecord, ComplianceCheckResult, IVMS101Payload } from '@sovereignx/shared';
+
+const API = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
+
+export async function fetchCVI(address: string): Promise<CVIRecord | null> {
+  const res = await fetch(`${API}/api/cvi/${address}`);
+  if (res.status === 404) return null;
+  if (!res.ok) throw new Error('CVI fetch failed');
+  return res.json();
+}
+
+export async function fetchOracle() {
+  const res = await fetch(`${API}/api/oracle/tbill`);
+  if (!res.ok) throw new Error('Oracle fetch failed');
+  return res.json();
+}
+
+export async function preCheckTransfer(
+  from: string,
+  to: string,
+  amountUsd: number,
+): Promise<ComplianceCheckResult & { ivms101?: IVMS101Payload }> {
+  const res = await fetch(`${API}/api/compliance/pre-check`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ from, to, amountUsd }),
+  });
+  const data = await res.json();
+  if (!res.ok && res.status !== 422) throw new Error(data.error ?? 'Pre-check failed');
+  return data;
+}
