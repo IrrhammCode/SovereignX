@@ -1,4 +1,6 @@
-import 'dotenv/config';
+import { loadRootEnv } from '@sovereignx/shared';
+loadRootEnv();
+
 import { createPublicClient, http, parseAbiItem, type Log } from 'viem';
 import type { IndexedEvent } from '@sovereignx/shared';
 

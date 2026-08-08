@@ -1,18 +1,41 @@
 import { Router } from 'express';
 import { runCCPCheck, buildIVMS101 } from '../integrations/cleanverse/ccp.js';
-import { queryAPass } from '../integrations/cleanverse/apass.js';
+import { queryAPass, getEnrollmentMagiclink } from '../integrations/cleanverse/apass.js';
 import { tBillOracle } from '../services/oracle.js';
+import { syncCVIToChain, syncCVIBatch } from '../services/cvi-relayer.js';
 import {
   generateAuditReport,
   exportAuditReportJSON,
   exportAuditReportCSV,
   logTransfer,
 } from '../services/auditor.js';
+import { config } from '../config.js';
 
 export const apiRouter = Router();
 
 apiRouter.get('/health', (_req, res) => {
-  res.json({ status: 'ok', service: 'sovereignx-api' });
+  res.json({
+    status: 'ok',
+    service: 'sovereignx-api',
+    contracts: config.contracts,
+  });
+});
+
+apiRouter.get('/enrollment/magiclink', async (_req, res) => {
+  const result = await getEnrollmentMagiclink();
+  if (result.url) return res.json(result);
+  res.status(502).json(result);
+});
+
+apiRouter.post('/cvi/sync', async (req, res) => {
+  const { wallet, wallets } = req.body as { wallet?: string; wallets?: string[] };
+  if (wallets?.length) {
+    return res.json({ results: await syncCVIBatch(wallets) });
+  }
+  if (wallet) {
+    return res.json(await syncCVIToChain(wallet));
+  }
+  res.status(400).json({ error: 'wallet or wallets required' });
 });
 
 apiRouter.get('/oracle/tbill', (_req, res) => {

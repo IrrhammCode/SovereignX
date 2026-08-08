@@ -7,6 +7,7 @@ import { ComplianceStatusWidget } from '@/components/ComplianceStatusWidget';
 import { AssetBlockGrid } from '@/components/AssetBlockGrid';
 import { TransferPanel } from '@/components/TransferPanel';
 import { OraclePanel } from '@/components/OraclePanel';
+import { EnrollmentPanel } from '@/components/EnrollmentPanel';
 
 export default function DashboardPage() {
   const { address, isConnected } = useAccount();
@@ -33,6 +34,7 @@ export default function DashboardPage() {
           <TransferPanel address={address} />
         </div>
         <div className="space-y-6">
+          <EnrollmentPanel />
           <ComplianceStatusWidget address={address} />
           <OraclePanel />
         </div>

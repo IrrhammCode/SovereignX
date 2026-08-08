@@ -1,7 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-import {Initializable} from "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
+import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import {ERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
 import {ERC20PausableUpgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20PausableUpgradeable.sol";
 import {AccessControlUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 import {ReentrancyGuardUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/ReentrancyGuardUpgradeable.sol";
@@ -19,8 +20,7 @@ contract SovereignXTBill is
     ERC20PausableUpgradeable,
     AccessControlUpgradeable,
     ReentrancyGuardUpgradeable,
-    UUPSUpgradeable,
-    IERC3643
+    UUPSUpgradeable
 {
     bytes32 public constant AGENT_ROLE = keccak256("AGENT_ROLE");
     bytes32 public constant UPGRADER_ROLE = keccak256("UPGRADER_ROLE");
@@ -32,6 +32,11 @@ contract SovereignXTBill is
     address private _compliance;
 
     mapping(address => bool) private _frozen;
+
+    event IdentityRegistrySet(address indexed registry);
+    event ComplianceSet(address indexed compliance);
+    event Frozen(address indexed account);
+    event Unfrozen(address indexed account);
 
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() {
@@ -93,15 +98,13 @@ contract SovereignXTBill is
 
     function pause() external onlyRole(DEFAULT_ADMIN_ROLE) {
         _pause();
-        emit Paused();
     }
 
     function unpause() external onlyRole(DEFAULT_ADMIN_ROLE) {
         _unpause();
-        emit Unpaused();
     }
 
-    /// @inheritdoc IERC3643
+    /// @notice Mint SOVX to verified receiver
     function mint(address to, uint256 amount) external onlyRole(AGENT_ROLE) whenNotPaused nonReentrant {
         _enforceMinFraction(amount);
         _withFailureStateSafety(address(0), to, amount);
@@ -109,17 +112,17 @@ contract SovereignXTBill is
         ICompliance(_compliance).created(to, amount);
     }
 
-    /// @inheritdoc IERC3643
+    /// @notice Mint SOVX to verified receiver
     function burn(address from, uint256 amount) external onlyRole(AGENT_ROLE) whenNotPaused nonReentrant {
         _withFailureStateSafety(from, address(0), amount);
         _burn(from, amount);
         ICompliance(_compliance).destroyed(from, amount);
     }
 
-    /// @inheritdoc IERC3643
+    /// @notice Mint SOVX to verified receiver
     function transfer(address to, uint256 amount)
         public
-        override(ERC20Upgradeable, IERC3643)
+        override
         whenNotPaused
         nonReentrant
         returns (bool)
@@ -131,10 +134,10 @@ contract SovereignXTBill is
         return true;
     }
 
-    /// @inheritdoc IERC3643
+    /// @notice Mint SOVX to verified receiver
     function transferFrom(address from, address to, uint256 amount)
         public
-        override(ERC20Upgradeable, IERC3643)
+        override
         whenNotPaused
         nonReentrant
         returns (bool)

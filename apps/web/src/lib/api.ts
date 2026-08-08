@@ -15,6 +15,24 @@ export async function fetchOracle() {
   return res.json();
 }
 
+export async function fetchMagiclink(): Promise<{ url?: string; error?: string }> {
+  const res = await fetch(`${API}/api/enrollment/magiclink`);
+  return res.json();
+}
+
+export async function syncCVI(wallet: string): Promise<{
+  synced: boolean;
+  txHash?: string;
+  reason?: string;
+}> {
+  const res = await fetch(`${API}/api/cvi/sync`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ wallet }),
+  });
+  return res.json();
+}
+
 export async function preCheckTransfer(
   from: string,
   to: string,
@@ -28,4 +46,19 @@ export async function preCheckTransfer(
   const data = await res.json();
   if (!res.ok && res.status !== 422) throw new Error(data.error ?? 'Pre-check failed');
   return data;
+}
+
+export async function logTransferOnChain(entry: {
+  txHash: string;
+  from: string;
+  to: string;
+  amount: string;
+  ccpPassed: boolean;
+  ivms101?: IVMS101Payload;
+}) {
+  await fetch(`${API}/api/compliance/log-transfer`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(entry),
+  });
 }

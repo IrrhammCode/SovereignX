@@ -10,7 +10,8 @@
     "dev:indexer": "pnpm --filter @sovereignx/indexer dev",
     "build": "pnpm -r build",
     "test:contracts": "cd contracts && forge test",
-    "deploy:testnet": "cd contracts && forge script script/Deploy.s.sol --rpc-url monad_testnet --broadcast"
+    "deploy:testnet": "bash scripts/deploy-testnet.sh",
+    "save:deployments": "node scripts/save-deployments.mjs"
   },
   "engines": {
     "node": ">=18"

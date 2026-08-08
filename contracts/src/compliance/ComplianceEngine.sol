@@ -109,7 +109,7 @@ contract ComplianceEngine is Initializable, AccessControlUpgradeable, UUPSUpgrad
     }
 
     function lastCCPAttestation(address from, address to) external view returns (bytes32) {
-        return _ccpAttestations[keccak256(abi.encodePacked(from, to, 0, block.number))];
+        return _ccpAttestations[keccak256(abi.encodePacked(from, to, uint256(0), block.number))];
     }
 
     // ── Internal compliance modifiers (logic) ────────────────────────────────

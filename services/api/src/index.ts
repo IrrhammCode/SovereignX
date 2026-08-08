@@ -1,3 +1,6 @@
+import { loadRootEnv } from '@sovereignx/shared';
+loadRootEnv();
+
 import cors from 'cors';
 import express from 'express';
 import { config } from './config.js';
@@ -11,4 +14,5 @@ app.use('/api', apiRouter);
 
 app.listen(config.port, () => {
   console.log(`[SovereignX API] listening on :${config.port}`);
+  console.log(`[SovereignX API] registry=${config.contracts.identityRegistry || '(not deployed)'}`);
 });

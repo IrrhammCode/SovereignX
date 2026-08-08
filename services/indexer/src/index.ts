@@ -1,3 +1,6 @@
+import { loadRootEnv } from '@sovereignx/shared';
+loadRootEnv();
+
 import express from 'express';
 import { getIndexedEvents, indexHistorical, watchTransfers } from './indexer.js';
 
