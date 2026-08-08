@@ -21,6 +21,16 @@ pnpm dev:web   # :3000
 - **Landing:** http://localhost:3000
 - **Dashboard:** http://localhost:3000/dashboard
 
+## Wallet Setup
+
+1. Install **MetaMask** (or any injected EVM wallet)
+2. Add **Monad Testnet**:
+   - Chain ID: `10143`
+   - RPC: `https://testnet-rpc.monad.xyz`
+   - Symbol: `MON`
+3. Click **Connect Wallet** on landing or dashboard
+4. If wrong network, use **Switch to Monad** banner
+
 ## Demo Script (5 min)
 
 1. **Connect wallet** — deployer or enrolled wallet on Monad testnet

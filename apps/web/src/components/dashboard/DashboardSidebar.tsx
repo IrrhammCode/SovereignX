@@ -8,12 +8,12 @@ import {
   ShieldCheck,
   FileText,
   Settings,
-  LogOut,
   Home,
 } from 'lucide-react';
 import { SovereignVaultLogo } from '@/components/SovereignVaultLogo';
+import { ConnectWallet } from '@/components/ConnectWallet';
 import { cn } from '@/lib/utils';
-import { useAccount, useConnect, useDisconnect } from 'wagmi';
+import { useAccount } from 'wagmi';
 
 export type DashboardTab = 'overview' | 'vault' | 'transfer' | 'compliance' | 'audit' | 'settings';
 
@@ -32,42 +32,45 @@ const navItems: { id: DashboardTab; label: string; icon: typeof LayoutDashboard 
 ];
 
 export function DashboardSidebar({ active, onNavigate }: DashboardSidebarProps) {
-  const { isConnected, address } = useAccount();
-  const { connect, connectors } = useConnect();
-  const { disconnect } = useDisconnect();
+  const { address, isConnected } = useAccount();
 
   return (
-    <aside className="flex h-full w-64 shrink-0 flex-col border-r border-emerald-500/10 bg-[#0A1628]/80 backdrop-blur-xl">
-      <div className="flex items-center gap-3 border-b border-emerald-500/10 p-6">
-        <SovereignVaultLogo size={36} />
-        <div>
-          <p className="font-bold text-white">
-            Sovereign<span className="text-brand-primary">X</span>
-          </p>
-          <p className="text-[10px] uppercase tracking-widest text-slate-500">Vault Dashboard</p>
+    <aside className="flex w-full shrink-0 flex-col border-b border-emerald-500/10 bg-[#0A1628]/80 backdrop-blur-xl md:h-screen md:w-64 md:border-b-0 md:border-r">
+      <div className="flex items-center justify-between gap-3 border-b border-emerald-500/10 p-4 md:p-6">
+        <div className="flex items-center gap-3">
+          <SovereignVaultLogo size={36} />
+          <div>
+            <p className="font-bold text-white">
+              Sovereign<span className="text-brand-primary">X</span>
+            </p>
+            <p className="text-[10px] uppercase tracking-widest text-slate-500">Vault Dashboard</p>
+          </div>
+        </div>
+        <div className="md:hidden">
+          <ConnectWallet />
         </div>
       </div>
 
-      <nav className="flex-1 space-y-1 p-4">
+      <nav className="flex gap-1 overflow-x-auto p-3 md:block md:space-y-1 md:p-4">
         {navItems.map(({ id, label, icon: Icon }) => (
           <button
             key={id}
             type="button"
             onClick={() => onNavigate(id)}
             className={cn(
-              'flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition',
+              'flex shrink-0 items-center gap-2 rounded-xl px-3 py-2.5 text-sm font-medium transition md:w-full md:gap-3 md:px-4 md:py-3',
               active === id
                 ? 'bg-brand-primary/15 text-brand-primary'
                 : 'text-slate-400 hover:bg-white/5 hover:text-white',
             )}
           >
             <Icon className="h-4 w-4" />
-            {label}
+            <span className="whitespace-nowrap">{label}</span>
           </button>
         ))}
       </nav>
 
-      <div className="space-y-2 border-t border-emerald-500/10 p-4">
+      <div className="mt-auto hidden space-y-3 border-t border-emerald-500/10 p-4 md:block">
         <Link
           href="/"
           className="flex items-center gap-3 rounded-xl px-4 py-2.5 text-sm text-slate-400 hover:bg-white/5 hover:text-white"
@@ -75,24 +78,9 @@ export function DashboardSidebar({ active, onNavigate }: DashboardSidebarProps) 
           <Home className="h-4 w-4" />
           Landing
         </Link>
-
-        {isConnected && address ? (
-          <button
-            type="button"
-            onClick={() => disconnect()}
-            className="flex w-full items-center gap-3 rounded-xl px-4 py-2.5 text-sm text-slate-400 hover:bg-red-500/10 hover:text-red-400"
-          >
-            <LogOut className="h-4 w-4" />
-            {address.slice(0, 6)}…{address.slice(-4)}
-          </button>
-        ) : (
-          <button
-            type="button"
-            onClick={() => connect({ connector: connectors[0] })}
-            className="w-full rounded-xl bg-brand-primary py-2.5 text-sm font-bold text-brand-dark"
-          >
-            Connect Wallet
-          </button>
+        <ConnectWallet showBalance />
+        {isConnected && address && (
+          <p className="truncate px-4 font-mono text-[10px] text-slate-600">{address}</p>
         )}
       </div>
     </aside>

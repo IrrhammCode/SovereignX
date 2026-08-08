@@ -12,7 +12,7 @@ const steps = [
 
 export function HowItWorksSection() {
   return (
-    <section id="architecture" className="relative px-6 py-32">
+    <section id="how-it-works" className="relative px-6 py-32">
       <div className="mx-auto max-w-7xl">
         <div className="mb-16 text-center">
           <h2 className="mb-4 text-4xl font-extrabold tracking-tighter md:text-5xl">

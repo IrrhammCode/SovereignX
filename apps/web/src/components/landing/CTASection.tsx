@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { ArrowRight } from 'lucide-react';
+import { ConnectWallet } from '@/components/ConnectWallet';
 
 export function CTASection() {
   return (
@@ -17,14 +17,17 @@ export function CTASection() {
           Ready to access <span className="text-gradient">verified yield</span>?
         </h2>
         <p className="mb-10 text-lg text-slate-400">
-          Connect your wallet, enroll your A-Pass, and start holding SOVX on Monad testnet.
+          Connect your wallet on Monad testnet, enroll A-Pass via Cleanverse, and start holding SOVX.
         </p>
-        <Link
-          href="/dashboard"
-          className="inline-flex items-center gap-2 rounded-full bg-brand-primary px-10 py-4 text-lg font-bold text-brand-dark shadow-glow transition hover:scale-105"
-        >
-          Open Dashboard <ArrowRight className="h-5 w-5" />
-        </Link>
+        <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
+          <ConnectWallet />
+          <Link
+            href="/dashboard"
+            className="inline-flex items-center gap-2 rounded-full glass-pill px-10 py-4 text-lg font-medium text-white transition hover:bg-white/10"
+          >
+            Open Dashboard
+          </Link>
+        </div>
       </motion.div>
     </section>
   );

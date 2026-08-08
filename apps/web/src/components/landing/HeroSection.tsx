@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { ArrowRight, ChevronDown, Shield, Sparkles } from 'lucide-react';
 import { useAccount } from 'wagmi';
@@ -12,7 +11,7 @@ export function HeroSection() {
   const router = useRouter();
 
   return (
-    <section className="relative flex min-h-[100svh] flex-col justify-center overflow-hidden px-6 pb-12 pt-32">
+    <section className="relative flex min-h-[100svh] flex-col justify-center overflow-hidden px-6 pb-12 pt-28 sm:pt-32">
       <div className="pointer-events-none absolute left-1/4 top-1/4 h-[500px] w-[500px] animate-float rounded-full bg-brand-primary/15 blur-[120px]" />
       <div className="pointer-events-none absolute bottom-1/4 right-1/4 h-[600px] w-[600px] animate-float-delayed rounded-full bg-brand-secondary/40 blur-[140px]" />
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
@@ -69,7 +68,7 @@ export function HeroSection() {
             <ArrowRight className="h-5 w-5" />
           </button>
           <a
-            href="#architecture"
+            href="#how-it-works"
             className="flex w-full items-center justify-center gap-2 rounded-full glass-pill px-8 py-4 text-base font-medium text-white transition hover:bg-white/10 sm:w-auto"
           >
             View Architecture <ChevronDown className="h-5 w-5" />

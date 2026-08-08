@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Outfit, Roboto_Mono } from 'next/font/google';
 import './globals.css';
 import { Providers } from './providers';
+import { NetworkGuard } from '@/components/NetworkGuard';
 
 const outfit = Outfit({
   subsets: ['latin'],
@@ -22,7 +23,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${outfit.variable} ${robotoMono.variable}`}>
       <body className="font-sans">
-        <Providers>{children}</Providers>
+        <Providers>
+          {children}
+          <NetworkGuard />
+        </Providers>
       </body>
     </html>
   );

@@ -46,3 +46,23 @@ body {
 .vault-panel {
   @apply glass-panel;
 }
+
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.05); }
+}
+
+@keyframes ringSpin {
+  from { transform: translate(-50%, -50%) rotate(0deg); }
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.animate-pulseGlow {
+  animation: pulseGlow 2s ease-in-out infinite;
+}
+
+.animate-ringSpin {
+  animation: ringSpin 8s linear infinite;
+}
+
+/* Verified cursor animations */
