@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import type { CVIRecord } from '@sovereignx/shared';
-import { fetchCVI } from '@/lib/api';
+import { fetchCVI, fetchDividendStatus } from '@/lib/api';
 
 interface ComplianceStatusWidgetProps {
   address?: string;
@@ -10,17 +10,24 @@ interface ComplianceStatusWidgetProps {
 
 export function ComplianceStatusWidget({ address }: ComplianceStatusWidgetProps) {
   const [cvi, setCvi] = useState<CVIRecord | null>(null);
+  const [cvaEligible, setCvaEligible] = useState<boolean | null>(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (!address) {
       setCvi(null);
+      setCvaEligible(null);
       return;
     }
     setLoading(true);
-    fetchCVI(address)
-      .then(setCvi)
-      .catch(() => setCvi(null))
+    Promise.all([
+      fetchCVI(address).catch(() => null),
+      fetchDividendStatus(address).catch(() => null),
+    ])
+      .then(([cviData, dividend]) => {
+        setCvi(cviData);
+        setCvaEligible(dividend?.eligible ?? false);
+      })
       .finally(() => setLoading(false));
   }, [address]);
 
@@ -65,9 +72,17 @@ export function ComplianceStatusWidget({ address }: ComplianceStatusWidgetProps)
 
         <div className="rounded-xl border border-sovereign-green/15 bg-sovereign-navy/60 p-4">
           <p className="text-xs text-gray-500">CVA Payout</p>
-          <p className="mt-1 text-lg font-semibold text-sovereign-glow">Eligible</p>
+          {loading ? (
+            <p className="mt-1 text-sm text-gray-400">Checking eligibility…</p>
+          ) : (
+            <p
+              className={`mt-1 text-lg font-semibold ${cvaEligible ? 'text-sovereign-glow' : 'text-yellow-400'}`}
+            >
+              {cvaEligible ? 'Eligible' : 'Not Eligible'}
+            </p>
+          )}
           <p className="mt-1 text-xs text-gray-500">
-            Dividends distributed via Cleanverse Verified Assets (A-Token)
+            Verified via Cleanverse CVI + on-chain identity registry
           </p>
         </div>
       </div>

@@ -104,7 +104,9 @@ SovereignX/
 | POST | `/api/compliance/pre-check` | CCP validation + IVMS 101 |
 | POST | `/api/compliance/log-transfer` | Persist transfer audit entry |
 | GET | `/api/compliance/travel-rule/:address` | Travel rule report download |
-| GET | `/api/oracle/tbill` | T-Bill NAV / yield (mock) |
+| GET | `/api/oracle/tbill` | Live T-Bill NAV / yield (Treasury.gov / FRED) |
+| GET | `/api/oracle/history` | Daily NAV snapshots |
+| GET | `/api/protocol/stats` | On-chain supply + live oracle |
 | GET | `/api/audit/report` | Compliance audit export |
 | GET | `/api/indexer/events` | On-chain SOVX Transfer events |
 | GET | `/api/dividends/status` | CVA dividend pool + estimates |

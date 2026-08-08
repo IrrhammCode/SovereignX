@@ -17,6 +17,7 @@ import {
 } from '../integrations/cleanverse/validator.js';
 import { config } from '../config.js';
 import { getDividendStatus } from '../services/dividends.js';
+import { getProtocolStats } from '../services/protocol.js';
 import { createWalletClient, http } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 
@@ -47,15 +48,44 @@ apiRouter.post('/cvi/sync', async (req, res) => {
   res.status(400).json({ error: 'wallet or wallets required' });
 });
 
-apiRouter.get('/oracle/tbill', (_req, res) => {
-  res.json(tBillOracle.getQuote());
+apiRouter.get('/oracle/tbill', async (_req, res) => {
+  try {
+    res.json(await tBillOracle.getQuote());
+  } catch (e) {
+    res.status(503).json({
+      error: 'Oracle unavailable',
+      detail: e instanceof Error ? e.message : 'unknown',
+    });
+  }
 });
 
-apiRouter.get('/oracle/dividends', (_req, res) => {
-  res.json({
-    perFraction: tBillOracle.computeDividendPerFraction().toString(),
-    schedule: tBillOracle.getMaturitySchedule(),
-  });
+apiRouter.get('/oracle/history', (_req, res) => {
+  res.json(tBillOracle.getNavHistory());
+});
+
+apiRouter.get('/oracle/dividends', async (_req, res) => {
+  try {
+    res.json({
+      perFraction: (await tBillOracle.computeDividendPerFraction()).toString(),
+      schedule: await tBillOracle.getMaturitySchedule(),
+    });
+  } catch (e) {
+    res.status(503).json({
+      error: 'Dividend oracle unavailable',
+      detail: e instanceof Error ? e.message : 'unknown',
+    });
+  }
+});
+
+apiRouter.get('/protocol/stats', async (_req, res) => {
+  try {
+    res.json(await getProtocolStats());
+  } catch (e) {
+    res.status(503).json({
+      error: 'Protocol stats unavailable',
+      detail: e instanceof Error ? e.message : 'unknown',
+    });
+  }
 });
 
 apiRouter.get('/cvi/:address', async (req, res) => {
@@ -78,7 +108,7 @@ apiRouter.post('/compliance/pre-check', async (req, res) => {
   const result = await runCCPCheck(from, to, amountUsd);
 
   if (result.allowed && result.senderCVI && result.receiverCVI) {
-    const ivms101 = buildIVMS101(
+    const ivms101 = await buildIVMS101(
       from,
       to,
       String(amountUsd),

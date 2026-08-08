@@ -106,25 +106,33 @@ export async function runCCPCheck(
   };
 }
 
-export function buildIVMS101(
+export async function buildIVMS101(
   from: string,
   to: string,
   amount: string,
   senderCVI: NonNullable<ComplianceCheckResult['senderCVI']>,
   receiverCVI: NonNullable<ComplianceCheckResult['receiverCVI']>,
-): IVMS101Payload {
+): Promise<IVMS101Payload> {
   const travelRuleRequired = Number(amount) >= config.travelRuleThresholdUsd;
+
+  const cvaAddress = config.contracts.cvaStablecoin;
+  let cvaEligible = false;
+  if (cvaAddress) {
+    const verify = await verifyUserCompliance(from, cvaAddress);
+    cvaEligible = verify.valid;
+  }
 
   return {
     originator: {
       accountNumber: from,
-      name: `CVI:${senderCVI.kycHash.slice(0, 16)}`,
+      name: `CVI Tier ${senderCVI.tier} · Group ${senderCVI.group}`,
       address: from,
       country: senderCVI.countryCode ?? 'US',
+      nationalId: senderCVI.kycHash,
     },
     beneficiary: {
       accountNumber: to,
-      name: `CVI:${receiverCVI.kycHash.slice(0, 16)}`,
+      name: `CVI Tier ${receiverCVI.tier} · Group ${receiverCVI.group}`,
       address: to,
       country: receiverCVI.countryCode ?? 'US',
     },
@@ -135,8 +143,8 @@ export function buildIVMS101(
       chain: config.cleanverse.chain,
     },
     compliance: {
-      cviVerified: true,
-      cvaEligible: true,
+      cviVerified: senderCVI.status === 'Verified' && receiverCVI.status === 'Verified',
+      cvaEligible,
       travelRuleRequired,
     },
   };

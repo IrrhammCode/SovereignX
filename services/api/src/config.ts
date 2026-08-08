@@ -28,4 +28,7 @@ export const config = {
   indexerUrl: process.env.INDEXER_URL ?? 'http://localhost:4001',
   validatorPool:
     process.env.VALIDATOR_POOL_ADDRESS ?? process.env.COMPLIANCE_ENGINE_ADDRESS ?? '',
+  fred: {
+    apiKey: process.env.FRED_API_KEY ?? '',
+  },
 } as const;

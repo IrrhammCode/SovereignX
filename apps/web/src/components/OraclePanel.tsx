@@ -8,6 +8,7 @@ export function OraclePanel() {
     navPerShare: number;
     yieldRate: number;
     lastUpdated: string;
+    source: string;
   } | null>(null);
 
   useEffect(() => {
@@ -28,6 +29,10 @@ export function OraclePanel() {
           <div className="flex justify-between">
             <dt className="text-gray-500">Yield</dt>
             <dd className="font-mono text-sovereign-glow">{quote.yieldRate}% APY</dd>
+          </div>
+          <div className="flex justify-between">
+            <dt className="text-gray-500">Source</dt>
+            <dd className="text-xs uppercase text-gray-400">{quote.source}</dd>
           </div>
           <div className="flex justify-between">
             <dt className="text-gray-500">Updated</dt>

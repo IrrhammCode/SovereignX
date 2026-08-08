@@ -15,6 +15,18 @@ export async function fetchOracle() {
   return res.json();
 }
 
+export async function fetchOracleHistory() {
+  const res = await fetch(`${API}/api/oracle/history`);
+  if (!res.ok) throw new Error('Oracle history fetch failed');
+  return res.json() as Promise<Array<{ date: string; nav: number; yieldRate: number }>>;
+}
+
+export async function fetchProtocolStats() {
+  const res = await fetch(`${API}/api/protocol/stats`);
+  if (!res.ok) throw new Error('Protocol stats fetch failed');
+  return res.json() as Promise<import('@sovereignx/shared').ProtocolStats>;
+}
+
 export async function fetchMagiclink(): Promise<{ url?: string; error?: string }> {
   const res = await fetch(`${API}/api/enrollment/magiclink`);
   return res.json();

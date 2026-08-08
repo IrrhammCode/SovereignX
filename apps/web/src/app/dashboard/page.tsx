@@ -35,7 +35,7 @@ export default function DashboardPage() {
   const { address, isConnected } = useAccount();
   const { data: balance } = useSOVXBalance(address);
   const [cvi, setCvi] = useState<CVIRecord | null>(null);
-  const [yieldRate, setYieldRate] = useState(5.28);
+  const [yieldRate, setYieldRate] = useState<number | null>(null);
 
   useEffect(() => {
     if (!address) {

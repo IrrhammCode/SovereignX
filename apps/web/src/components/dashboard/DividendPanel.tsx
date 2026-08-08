@@ -51,7 +51,7 @@ export function DividendPanel({ wallet }: DividendPanelProps) {
         <div className="rounded-xl border border-emerald-500/10 bg-black/30 p-4">
           <p className="text-xs text-slate-500">Est. per $10 fraction</p>
           <p className="mt-1 text-xl font-bold text-brand-primary">${data.perFractionUsd}</p>
-          <p className="text-[10px] text-slate-600">quarterly · mock oracle</p>
+          <p className="text-[10px] text-slate-600">quarterly · live T-Bill yield</p>
         </div>
         <div className="rounded-xl border border-emerald-500/10 bg-black/30 p-4">
           <p className="text-xs text-slate-500">Distributor pool</p>

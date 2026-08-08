@@ -2,15 +2,20 @@
 
 import { GlowCard } from '@/components/ui/GlowCard';
 import { TrendingUp, Wallet, Shield, Coins } from 'lucide-react';
+import { useChainId } from 'wagmi';
 import { formatSOVX } from '@/lib/contracts';
+import { monadTestnet } from '@/lib/chains';
 
 interface StatCardsProps {
   balance?: bigint;
   cviStatus?: string;
-  yieldRate?: number;
+  yieldRate?: number | null;
 }
 
-export function DashboardStatCards({ balance, cviStatus = '—', yieldRate = 5.28 }: StatCardsProps) {
+export function DashboardStatCards({ balance, cviStatus = '—', yieldRate = null }: StatCardsProps) {
+  const chainId = useChainId();
+  const networkLabel = chainId === monadTestnet.id ? 'Monad Testnet' : `Chain ${chainId}`;
+
   const cards = [
     {
       label: 'SOVX Balance',
@@ -21,7 +26,7 @@ export function DashboardStatCards({ balance, cviStatus = '—', yieldRate = 5.2
     },
     {
       label: 'Est. Yield',
-      value: `${yieldRate}%`,
+      value: yieldRate != null ? `${yieldRate.toFixed(2)}%` : '—',
       sub: 'US 3M T-Bill APY',
       icon: TrendingUp,
       accent: 'text-emerald-400',
@@ -36,7 +41,7 @@ export function DashboardStatCards({ balance, cviStatus = '—', yieldRate = 5.2
     {
       label: 'Network',
       value: 'Monad',
-      sub: 'Testnet · Chain 10143',
+      sub: networkLabel,
       icon: Coins,
       accent: 'text-slate-200',
     },

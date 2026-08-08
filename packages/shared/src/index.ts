@@ -37,7 +37,25 @@ export interface TBillOracleQuote {
   navPerShare: number;
   yieldRate: number;
   lastUpdated: string;
-  source: 'mock' | 'live';
+  source: 'fred' | 'treasury';
+}
+
+export interface MaturityEntry {
+  date: string;
+  cusip: string;
+  yield: number;
+}
+
+export interface ProtocolStats {
+  yieldRate: number;
+  navPerShare: number;
+  totalSupply: string;
+  totalSupplyFormatted: string;
+  minFractionUsd: number;
+  chainId: number;
+  chainName: string;
+  oracleSource: 'fred' | 'treasury';
+  lastUpdated: string;
 }
 
 export interface IVMS101Payload {

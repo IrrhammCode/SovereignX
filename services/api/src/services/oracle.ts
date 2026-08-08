@@ -1,34 +1,54 @@
-import type { TBillOracleQuote } from '@sovereignx/shared';
+import type { TBillOracleQuote, MaturityEntry } from '@sovereignx/shared';
+import { config } from '../config.js';
+import {
+  computeNavPerFraction,
+  fetchLive3MonthYield,
+  fetchUpcomingBillSchedule,
+} from './treasury-feed.js';
+import { getNavHistory, recordOracleSnapshot } from './oracle-history.js';
 
-/** Mock RWA Oracle — feeds T-Bill NAV, yield, and dividend schedule */
+const CACHE_TTL_MS = 60 * 60 * 1000;
+
 export class TBillOracle {
-  private baseNav = 99.875;
-  private baseYield = 5.28;
+  private cache: { quote: TBillOracleQuote; expires: number } | null = null;
+  private scheduleCache: { entries: MaturityEntry[]; expires: number } | null = null;
 
-  getQuote(): TBillOracleQuote {
-    const jitter = (Math.sin(Date.now() / 86400000) * 0.01);
-    return {
-      navPerShare: Number((this.baseNav + jitter).toFixed(4)),
-      yieldRate: this.baseYield,
+  async getQuote(): Promise<TBillOracleQuote> {
+    if (this.cache && Date.now() < this.cache.expires) {
+      return this.cache.quote;
+    }
+
+    const { rate, source } = await fetchLive3MonthYield(config.fred.apiKey);
+    const quote: TBillOracleQuote = {
+      navPerShare: computeNavPerFraction(rate),
+      yieldRate: rate,
       lastUpdated: new Date().toISOString(),
-      source: 'mock',
+      source,
     };
+
+    recordOracleSnapshot(quote);
+    this.cache = { quote, expires: Date.now() + CACHE_TTL_MS };
+    return quote;
   }
 
-  /** Dividend per $10 fraction (6-decimal units) in CVA micro-units */
-  computeDividendPerFraction(): bigint {
-    const quote = this.getQuote();
-    const annualYield = quote.yieldRate / 100;
-    const quarterlyPerTen = 10 * annualYield / 4;
+  async computeDividendPerFraction(): Promise<bigint> {
+    const quote = await this.getQuote();
+    const quarterlyPerTen = (10 * quote.yieldRate) / 100 / 4;
     return BigInt(Math.floor(quarterlyPerTen * 1_000_000));
   }
 
-  getMaturitySchedule(): Array<{ date: string; cusip: string; yield: number }> {
-    return [
-      { date: '2026-11-15', cusip: '912797MF4', yield: 5.31 },
-      { date: '2027-02-15', cusip: '912797MG2', yield: 5.25 },
-      { date: '2027-05-15', cusip: '912797MH0', yield: 5.22 },
-    ];
+  async getMaturitySchedule(): Promise<MaturityEntry[]> {
+    if (this.scheduleCache && Date.now() < this.scheduleCache.expires) {
+      return this.scheduleCache.entries;
+    }
+
+    const entries = await fetchUpcomingBillSchedule();
+    this.scheduleCache = { entries, expires: Date.now() + CACHE_TTL_MS };
+    return entries;
+  }
+
+  getNavHistory() {
+    return getNavHistory();
   }
 }
 

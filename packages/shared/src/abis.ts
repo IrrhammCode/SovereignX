@@ -55,6 +55,13 @@ export const sovxTokenAbi = [
   },
   {
     type: 'function',
+    name: 'totalSupply',
+    inputs: [],
+    outputs: [{ type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
     name: 'MIN_FRACTION',
     inputs: [],
     outputs: [{ type: 'uint256' }],

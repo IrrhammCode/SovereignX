@@ -3,39 +3,42 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { GlowCard } from '@/components/ui/GlowCard';
-
-const API = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
+import { fetchProtocolStats } from '@/lib/api';
 
 export function ProtocolStatsSection() {
-  const [stats, setStats] = useState({
-    yield: '5.28%',
-    nav: '$10.00',
-    supply: '1,000 SOVX',
-    network: 'Monad Testnet',
-  });
+  const [stats, setStats] = useState<{
+    yield: string;
+    nav: string;
+    supply: string;
+    network: string;
+  } | null>(null);
 
   useEffect(() => {
-    Promise.all([
-      fetch(`${API}/api/oracle/tbill`).then((r) => (r.ok ? r.json() : null)),
-      fetch(`${API}/api/health`).then((r) => (r.ok ? r.json() : null)),
-    ])
-      .then(([oracle, health]) => {
-        setStats((s) => ({
-          ...s,
-          yield: oracle?.yieldRate != null ? `${oracle.yieldRate}% APY` : s.yield,
-          nav: oracle?.navPerShare != null ? `$${oracle.navPerShare.toFixed(2)}` : s.nav,
-          network: health?.contracts?.sovxToken ? 'Monad · Live' : s.network,
-        }));
-      })
-      .catch(() => null);
+    fetchProtocolStats()
+      .then((s) =>
+        setStats({
+          yield: `${s.yieldRate.toFixed(2)}% APY`,
+          nav: `$${s.navPerShare.toFixed(4)}`,
+          supply: s.totalSupplyFormatted,
+          network: `${s.chainName} · ${s.oracleSource}`,
+        }),
+      )
+      .catch(() => setStats(null));
   }, []);
 
-  const items = [
-    { label: 'T-Bill Yield', value: stats.yield },
-    { label: 'SOVX NAV', value: stats.nav },
-    { label: 'Min Fraction', value: '$10.00' },
-    { label: 'Network', value: stats.network },
-  ];
+  const items = stats
+    ? [
+        { label: 'T-Bill Yield', value: stats.yield },
+        { label: 'SOVX NAV', value: stats.nav },
+        { label: 'Total Supply', value: stats.supply },
+        { label: 'Network', value: stats.network },
+      ]
+    : [
+        { label: 'T-Bill Yield', value: '—' },
+        { label: 'SOVX NAV', value: '—' },
+        { label: 'Total Supply', value: '—' },
+        { label: 'Network', value: '—' },
+      ];
 
   return (
     <section className="relative z-10 px-6 pb-8">

@@ -17,7 +17,7 @@ flowchart TB
 
     subgraph Backend
         API[Node.js API<br/>Cleanverse v3 Gateway]
-        ORA[RWA Oracle Mock<br/>T-Bill NAV / Yield]
+        ORA[RWA Oracle<br/>Treasury.gov / FRED]
         AUD[Auditor Report Generator]
         IDX[Blockchain Indexer]
     end

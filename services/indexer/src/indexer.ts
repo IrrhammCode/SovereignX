@@ -17,12 +17,23 @@ const TRANSFER = parseAbiItem(
 );
 
 const events: IndexedEvent[] = [];
+const blockTimestamps = new Map<number, number>();
 
 export const publicClient = createPublicClient({
   transport: http(RPC),
 });
 
-export function parseTransferLog(log: Log): IndexedEvent {
+async function blockTimestamp(blockNumber: number): Promise<number> {
+  const cached = blockTimestamps.get(blockNumber);
+  if (cached != null) return cached;
+
+  const block = await publicClient.getBlock({ blockNumber: BigInt(blockNumber) });
+  const ts = Number(block.timestamp) * 1000;
+  blockTimestamps.set(blockNumber, ts);
+  return ts;
+}
+
+export async function parseTransferLog(log: Log): Promise<IndexedEvent> {
   const decoded = decodeEventLog({
     abi: [TRANSFER],
     data: log.data,
@@ -30,9 +41,10 @@ export function parseTransferLog(log: Log): IndexedEvent {
   });
 
   const args = decoded.args as { from: string; to: string; value: bigint };
+  const blockNumber = Number(log.blockNumber ?? 0n);
 
   return {
-    blockNumber: Number(log.blockNumber ?? 0n),
+    blockNumber,
     txHash: log.transactionHash ?? '',
     event: 'Transfer',
     args: {
@@ -41,13 +53,13 @@ export function parseTransferLog(log: Log): IndexedEvent {
       value: args.value.toString(),
       amountUsd: formatUnits(args.value, 6),
     },
-    timestamp: Date.now(),
+    timestamp: await blockTimestamp(blockNumber),
   };
 }
 
 export async function indexHistorical(fromBlock?: bigint) {
   if (!SOVX) {
-    console.warn('[indexer] SOVX_TOKEN_ADDRESS not set — running in stub mode');
+    console.warn('[indexer] SOVX_TOKEN_ADDRESS not set — skipping indexing');
     return;
   }
 
@@ -65,7 +77,7 @@ export async function indexHistorical(fromBlock?: bigint) {
       toBlock: toBlock,
     });
     for (const log of logs) {
-      events.push(parseTransferLog(log));
+      events.push(await parseTransferLog(log));
     }
     total += logs.length;
   }
@@ -83,9 +95,9 @@ export async function watchTransfers(onEvent: (e: IndexedEvent) => void) {
   publicClient.watchContractEvent({
     address: SOVX,
     abi: [TRANSFER],
-    onLogs: (logs) => {
+    onLogs: async (logs) => {
       for (const log of logs) {
-        const evt = parseTransferLog(log);
+        const evt = await parseTransferLog(log);
         events.push(evt);
         onEvent(evt);
       }

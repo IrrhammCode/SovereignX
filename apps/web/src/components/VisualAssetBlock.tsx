@@ -6,8 +6,17 @@ interface VisualAssetBlockProps {
   dimmed?: boolean;
 }
 
+function quarterAccrualPercent(): number {
+  const now = new Date();
+  const quarterStart = new Date(Date.UTC(now.getUTCFullYear(), Math.floor(now.getUTCMonth() / 3) * 3, 1));
+  const daysInQuarter = (now.getTime() - quarterStart.getTime()) / (1000 * 60 * 60 * 24);
+  return Math.min(100, Math.round((daysInQuarter / 91) * 100));
+}
+
 /** $10 fractionalized T-Bill visual block */
 export function VisualAssetBlock({ index, connected, dimmed }: VisualAssetBlockProps) {
+  const accrual = quarterAccrualPercent();
+
   return (
     <div
       className={`group relative rounded-xl border p-3 transition-all ${
@@ -29,9 +38,10 @@ export function VisualAssetBlock({ index, connected, dimmed }: VisualAssetBlockP
       <div className="mt-2 h-1 overflow-hidden rounded-full bg-sovereign-blue">
         <div
           className="h-full bg-gradient-to-r from-sovereign-green to-sovereign-glow"
-          style={{ width: `${60 + (index % 4) * 10}%` }}
+          style={{ width: `${accrual}%` }}
         />
       </div>
+      <p className="mt-1 text-[9px] text-gray-600">{accrual}% quarter accrual</p>
     </div>
   );
 }
