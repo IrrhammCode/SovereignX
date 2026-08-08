@@ -18,6 +18,9 @@ pnpm dev:api   # :4000
 pnpm dev:web   # :3000
 ```
 
+- **Landing:** http://localhost:3000
+- **Dashboard:** http://localhost:3000/dashboard
+
 ## Demo Script (5 min)
 
 1. **Connect wallet** — deployer or enrolled wallet on Monad testnet

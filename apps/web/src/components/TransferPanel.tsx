@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { parseUnits } from 'viem';
 import { useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
 import { sovxTokenAbi, MIN_FRACTION_UNITS } from '@sovereignx/shared';
-import { preCheckTransfer, syncCVI, logTransferOnChain } from '@/lib/api';
+import { preCheckTransfer, syncCVI, logTransferOnChain, fetchTravelRule } from '@/lib/api';
 import { SOVX, useSOVXBalance, formatSOVX } from '@/lib/contracts';
 
 interface TransferPanelProps {
@@ -174,8 +174,38 @@ export function TransferPanel({ address }: TransferPanelProps) {
         <details className="mt-3 rounded-lg border border-sovereign-green/20 bg-sovereign-navy/60 p-3 text-xs">
           <summary className="cursor-pointer text-sovereign-green">IVMS 101 Payload</summary>
           <pre className="mt-2 overflow-auto text-gray-400">{JSON.stringify(ivms101, null, 2)}</pre>
+          {address && (
+            <TravelRuleLink address={address} />
+          )}
         </details>
       )}
+    </div>
+  );
+}
+
+function TravelRuleLink({ address }: { address: string }) {
+  const [url, setUrl] = useState<string | null>(null);
+  const [err, setErr] = useState<string | null>(null);
+
+  async function load() {
+    setErr(null);
+    const r = await fetchTravelRule(address);
+    if (r.url) setUrl(r.url);
+    else setErr(r.error ?? 'Travel rule unavailable');
+  }
+
+  return (
+    <div className="mt-3 border-t border-sovereign-green/10 pt-3">
+      {url ? (
+        <a href={url} target="_blank" rel="noreferrer" className="text-sovereign-glow hover:underline">
+          Download Cleanverse Travel Rule →
+        </a>
+      ) : (
+        <button type="button" onClick={load} className="text-sovereign-green hover:underline">
+          Fetch Travel Rule from Cleanverse
+        </button>
+      )}
+      {err && <p className="mt-1 text-red-400">{err}</p>}
     </div>
   );
 }

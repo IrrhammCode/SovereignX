@@ -75,3 +75,8 @@ export async function fetchAuditReport(from?: string, to?: string) {
 export function getAuditDownloadUrl(format: 'json' | 'csv' = 'json') {
   return `${API}/api/audit/report?format=${format === 'csv' ? 'csv' : 'download'}`;
 }
+
+export async function fetchTravelRule(address: string) {
+  const res = await fetch(`${API}/api/compliance/travel-rule/${address}`);
+  return res.json();
+}

@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { runCCPCheck, buildIVMS101 } from '../integrations/cleanverse/ccp.js';
-import { queryAPass, getEnrollmentMagiclink } from '../integrations/cleanverse/apass.js';
+import { queryAPass, getEnrollmentMagiclink, downloadTravelRule } from '../integrations/cleanverse/apass.js';
 import { tBillOracle } from '../services/oracle.js';
 import { syncCVIToChain, syncCVIBatch } from '../services/cvi-relayer.js';
 import {
@@ -80,6 +80,12 @@ apiRouter.post('/compliance/pre-check', async (req, res) => {
   }
 
   res.status(422).json(result);
+});
+
+apiRouter.get('/compliance/travel-rule/:address', async (req, res) => {
+  const result = await downloadTravelRule(req.params.address);
+  if (result.url) return res.json(result);
+  res.status(502).json(result);
 });
 
 apiRouter.post('/compliance/log-transfer', (req, res) => {
