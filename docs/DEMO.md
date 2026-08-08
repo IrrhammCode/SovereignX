@@ -53,6 +53,7 @@ Register pool: `POST /api/validator/register` (requires EIP-191 signature from o
 pnpm sync:env          # sync .env from deployments/monad.json
 pnpm register:validator # register via API (needs dev:api running)
 pnpm dev:indexer       # blockchain event indexer on :4001
+pnpm deposit:dividends # seed CVA dividend pool (needs deployer CVA balance)
 ```
 
 ## API Endpoints

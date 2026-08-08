@@ -119,6 +119,7 @@ SovereignX/
 |---------|-------------|
 | `pnpm sync:env` | Sync `.env` from `deployments/monad.json` |
 | `pnpm register:validator` | Register Cleanverse validator pool via API |
+| `pnpm deposit:dividends` | Deposit CVA into dividend distributor (default $100) |
 
 ## Documentation
 

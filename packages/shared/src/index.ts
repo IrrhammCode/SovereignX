@@ -1,6 +1,6 @@
 /** SovereignX shared types */
 
-export { identityRegistryAbi, sovxTokenAbi, dividendDistributorAbi } from './abis.js';
+export { identityRegistryAbi, sovxTokenAbi, dividendDistributorAbi, erc20Abi } from './abis.js';
 
 export const SOVX_DECIMALS = 6;
 export const MIN_FRACTION_USD = 10;

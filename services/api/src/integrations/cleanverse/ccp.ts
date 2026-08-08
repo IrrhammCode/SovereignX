@@ -1,8 +1,23 @@
 import type { ComplianceCheckResult, IVMS101Payload } from '@sovereignx/shared';
 import { createHash } from 'node:crypto';
 import { queryAPass } from './apass.js';
-import { verifyUserCompliance } from './validator.js';
+import { isPoolRegistered, verifyUserCompliance } from './validator.js';
 import { config } from '../../config.js';
+
+let poolRegisteredCache: { value: boolean; expires: number } | null = null;
+
+async function isValidatorPoolActive(): Promise<boolean> {
+  const pool = config.validatorPool;
+  if (!pool) return false;
+
+  if (poolRegisteredCache && Date.now() < poolRegisteredCache.expires) {
+    return poolRegisteredCache.value;
+  }
+
+  const status = await isPoolRegistered(pool);
+  poolRegisteredCache = { value: status.registered, expires: Date.now() + 5 * 60_000 };
+  return status.registered;
+}
 
 export async function runCCPCheck(
   from: string,
@@ -52,8 +67,10 @@ export async function runCCPCheck(
     };
   }
 
+  const poolActive = await isValidatorPoolActive();
   const pool = config.validatorPool;
-  if (pool) {
+
+  if (poolActive && pool) {
     const [senderVerify, receiverVerify] = await Promise.all([
       verifyUserCompliance(from, pool),
       verifyUserCompliance(to, pool),
@@ -76,20 +93,6 @@ export async function runCCPCheck(
         receiverCVI,
       };
     }
-  } else {
-    const cvaAddress = config.contracts.cvaStablecoin;
-    if (cvaAddress) {
-      const verify = await verifyUserCompliance(from, cvaAddress);
-      if (!verify.valid) {
-        return {
-          allowed: false,
-          code: 'CCP_VERIFY',
-          message: verify.message,
-          senderCVI,
-          receiverCVI,
-        };
-      }
-    }
   }
 
   const attestationHash = createHash('sha256')
@@ -99,7 +102,7 @@ export async function runCCPCheck(
   return {
     allowed: true,
     code: '0000',
-    message: 'CCP validation passed',
+    message: poolActive ? 'CCP validation passed' : 'CCP passed via A-Pass (validator pool not registered)',
     attestationHash,
     senderCVI,
     receiverCVI,
@@ -112,14 +115,16 @@ export async function buildIVMS101(
   amount: string,
   senderCVI: NonNullable<ComplianceCheckResult['senderCVI']>,
   receiverCVI: NonNullable<ComplianceCheckResult['receiverCVI']>,
-): Promise<IVMS101Payload> {
+) {
   const travelRuleRequired = Number(amount) >= config.travelRuleThresholdUsd;
 
   const cvaAddress = config.contracts.cvaStablecoin;
   let cvaEligible = false;
-  if (cvaAddress) {
+  if (cvaAddress && (await isValidatorPoolActive())) {
     const verify = await verifyUserCompliance(from, cvaAddress);
     cvaEligible = verify.valid;
+  } else if (cvaAddress) {
+    cvaEligible = senderCVI.status === 'Verified';
   }
 
   return {

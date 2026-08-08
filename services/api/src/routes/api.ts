@@ -17,6 +17,7 @@ import {
 } from '../integrations/cleanverse/validator.js';
 import { config } from '../config.js';
 import { getDividendStatus } from '../services/dividends.js';
+import { depositCvaToDistributor } from '../services/dividend-deposit.js';
 import { getProtocolStats } from '../services/protocol.js';
 import { createWalletClient, http } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
@@ -127,9 +128,18 @@ apiRouter.get('/compliance/travel-rule/:address', async (req, res) => {
   res.status(502).json(result);
 });
 
-apiRouter.post('/compliance/log-transfer', (req, res) => {
+apiRouter.post('/compliance/log-transfer', async (req, res) => {
   const { txHash, from, to, amount, ccpPassed, ivms101 } = req.body;
   logTransfer({ txHash, from, to, amount, ccpPassed, ivms101 });
+
+  if (txHash?.startsWith('0x')) {
+    fetch(`${config.indexerUrl}/ingest`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ txHash }),
+    }).catch(() => null);
+  }
+
   res.json({ logged: true });
 });
 
@@ -173,6 +183,18 @@ apiRouter.get('/dividends/status', async (req, res) => {
   res.json(await getDividendStatus(wallet));
 });
 
+apiRouter.post('/dividends/deposit', async (req, res) => {
+  const amountUsd = Number(req.body?.amountUsd ?? 100);
+  if (!Number.isFinite(amountUsd) || amountUsd <= 0) {
+    return res.status(400).json({ error: 'amountUsd must be a positive number' });
+  }
+  try {
+    res.json(await depositCvaToDistributor(amountUsd));
+  } catch (e) {
+    res.status(502).json({ error: e instanceof Error ? e.message : 'deposit failed' });
+  }
+});
+
 apiRouter.get('/validator/status', async (_req, res) => {
   const pool = config.validatorPool;
   if (!pool) return res.status(400).json({ error: 'VALIDATOR_POOL_ADDRESS not configured' });
@@ -198,7 +220,7 @@ apiRouter.post('/validator/register', async (_req, res) => {
   }
 
   const account = privateKeyToAccount(pk);
-  const message = `${config.cleanverse.chain}${pool}`;
+  const message = `${config.cleanverse.chain}${pool.toLowerCase()}`;
   const walletClient = createWalletClient({
     account,
     transport: http(config.monad.rpcUrl),

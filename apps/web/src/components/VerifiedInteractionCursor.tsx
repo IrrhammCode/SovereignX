@@ -27,7 +27,10 @@ export function VerifiedInteractionCursor() {
       setVisible(!!verified);
     };
 
-    const onUp = () => setActive(false);
+    const onUp = () => {
+      setActive(false);
+      setVisible(false);
+    };
 
     window.addEventListener('mousemove', onMove);
     window.addEventListener('mousedown', onDown);

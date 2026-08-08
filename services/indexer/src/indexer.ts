@@ -85,6 +85,26 @@ export async function indexHistorical(fromBlock?: bigint) {
   console.log(`[indexer] indexed ${total} Transfer events (blocks ${start}-${latest})`);
 }
 
+export async function ingestFromTxHash(txHash: `0x${string}`): Promise<IndexedEvent[]> {
+  if (!SOVX) return [];
+
+  const receipt = await publicClient.getTransactionReceipt({ hash: txHash });
+  const ingested: IndexedEvent[] = [];
+
+  for (const log of receipt.logs) {
+    if (log.address.toLowerCase() !== SOVX.toLowerCase()) continue;
+    try {
+      const evt = await parseTransferLog(log);
+      events.push(evt);
+      ingested.push(evt);
+    } catch {
+      // skip non-transfer logs
+    }
+  }
+
+  return ingested;
+}
+
 export function getIndexedEvents(limit = 50): IndexedEvent[] {
   return events.slice(-limit).reverse();
 }
