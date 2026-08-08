@@ -2,7 +2,7 @@ import { createPublicClient, http, formatUnits } from 'viem';
 import { dividendDistributorAbi, identityRegistryAbi } from '@sovereignx/shared';
 import { tBillOracle } from './oracle.js';
 import { config } from '../config.js';
-import { verifyUserCompliance } from '../integrations/cleanverse/validator.js';
+import { isPoolRegistered, verifyUserCompliance } from '../integrations/cleanverse/validator.js';
 
 const client = createPublicClient({
   transport: http(config.monad.rpcUrl),
@@ -20,8 +20,11 @@ async function isWalletEligible(wallet: string): Promise<boolean> {
   });
   if (!verified) return false;
 
-  const pool = config.validatorPool || config.contracts.cvaStablecoin;
+  const pool = config.validatorPool;
   if (!pool) return verified;
+
+  const registration = await isPoolRegistered(pool);
+  if (!registration.registered) return verified;
 
   const check = await verifyUserCompliance(wallet, pool);
   return check.valid;

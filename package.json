@@ -14,7 +14,8 @@
     "save:deployments": "node scripts/save-deployments.mjs",
     "sync:env": "node scripts/sync-env.mjs",
     "register:validator": "node scripts/register-validator-pool.mjs",
-    "deposit:dividends": "node scripts/deposit-dividend-pool.mjs"
+    "deposit:dividends": "node scripts/deposit-dividend-pool.mjs",
+    "faucet:cva": "node scripts/request-cva-faucet.mjs"
   },
   "engines": {
     "node": ">=18"

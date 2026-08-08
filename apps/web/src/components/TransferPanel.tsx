@@ -16,6 +16,7 @@ export function TransferPanel({ address }: TransferPanelProps) {
   const [amount, setAmount] = useState('10');
   const [status, setStatus] = useState<string | null>(null);
   const [ivms101, setIvms101] = useState<object | null>(null);
+  const [lastTxHash, setLastTxHash] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   const { data: balance } = useSOVXBalance(address);
@@ -80,6 +81,7 @@ export function TransferPanel({ address }: TransferPanelProps) {
       });
 
       setStatus(`Transfer submitted: ${hash.slice(0, 14)}…`);
+      setLastTxHash(hash);
       await logTransferOnChain({
         txHash: hash,
         from: address,
@@ -174,35 +176,35 @@ export function TransferPanel({ address }: TransferPanelProps) {
         <details className="mt-3 rounded-lg border border-sovereign-green/20 bg-sovereign-navy/60 p-3 text-xs">
           <summary className="cursor-pointer text-sovereign-green">IVMS 101 Payload</summary>
           <pre className="mt-2 overflow-auto text-gray-400">{JSON.stringify(ivms101, null, 2)}</pre>
-          {address && (
-            <TravelRuleLink address={address} />
-          )}
         </details>
+      )}
+      {address && lastTxHash && (
+        <TravelRuleLink address={address} txHash={lastTxHash} />
       )}
     </div>
   );
 }
 
-function TravelRuleLink({ address }: { address: string }) {
+function TravelRuleLink({ address, txHash }: { address: string; txHash: string }) {
   const [url, setUrl] = useState<string | null>(null);
   const [err, setErr] = useState<string | null>(null);
 
   async function load() {
     setErr(null);
-    const r = await fetchTravelRule(address);
+    const r = await fetchTravelRule(address, txHash);
     if (r.url) setUrl(r.url);
     else setErr(r.error ?? 'Travel rule unavailable');
   }
 
   return (
-    <div className="mt-3 border-t border-sovereign-green/10 pt-3">
+    <div className="mt-3 rounded-lg border border-sovereign-green/20 bg-sovereign-navy/60 p-3 text-xs">
       {url ? (
         <a href={url} target="_blank" rel="noreferrer" className="text-sovereign-glow hover:underline">
           Download Cleanverse Travel Rule →
         </a>
       ) : (
         <button type="button" onClick={load} className="text-sovereign-green hover:underline">
-          Fetch Travel Rule from Cleanverse
+          Fetch Travel Rule from Cleanverse (IVMS 101)
         </button>
       )}
       {err && <p className="mt-1 text-red-400">{err}</p>}

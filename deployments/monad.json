@@ -1,6 +1,7 @@
 {
   "chain": "monad-testnet",
   "chainId": 10143,
+  "deployBlock": 51873800,
   "timestamp": "2026-08-08T05:47:46.969Z",
   "identityRegistry": "0x935AbfE82F9Abcc99a25f8252230d991887eB36d",
   "complianceEngine": "0x622fBD1835B855334A2033ebF61Ad56f3d095286",

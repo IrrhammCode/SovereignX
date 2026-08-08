@@ -31,6 +31,9 @@ set('VALIDATOR_POOL_ADDRESS', deployments.complianceEngine);
 set('INDEXER_URL', 'http://localhost:4001');
 set('NEXT_PUBLIC_INDEXER_URL', 'http://localhost:4001');
 set('INDEXER_LOOKBACK_BLOCKS', '5000');
+if (deployments.deployBlock) {
+  set('INDEXER_FROM_BLOCK', String(deployments.deployBlock));
+}
 
 writeFileSync(envPath, env);
 console.log('Synced .env from deployments/monad.json');

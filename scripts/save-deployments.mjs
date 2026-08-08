@@ -32,6 +32,7 @@ const deployments = {
   sovxToken: a.sovx ?? '',
   dividendDistributor: a.dividend ?? '',
   cvaStablecoin: a.cva ?? '0xaC0893567D43C3E7e6e35a72803df05416C1f20D',
+  deployBlock: a.deployBlock ? Number(a.deployBlock) : undefined,
   explorer: 'https://testnet.monadscan.com',
 };
 

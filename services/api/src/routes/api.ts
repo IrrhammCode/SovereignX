@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { runCCPCheck, buildIVMS101 } from '../integrations/cleanverse/ccp.js';
-import { queryAPass, getEnrollmentMagiclink, downloadTravelRule } from '../integrations/cleanverse/apass.js';
+import { queryAPass, getEnrollmentMagiclink, downloadTravelRule, requestCvaFaucet } from '../integrations/cleanverse/apass.js';
 import { tBillOracle } from '../services/oracle.js';
 import { syncCVIToChain, syncCVIBatch } from '../services/cvi-relayer.js';
 import {
@@ -122,9 +122,37 @@ apiRouter.post('/compliance/pre-check', async (req, res) => {
   res.status(422).json(result);
 });
 
-apiRouter.get('/compliance/travel-rule/:address', async (req, res) => {
-  const result = await downloadTravelRule(req.params.address);
+apiRouter.post('/compliance/travel-rule', async (req, res) => {
+  const { address, txHash } = req.body as { address?: string; txHash?: string };
+  if (!address || !txHash) {
+    return res.status(400).json({ error: 'address and txHash required' });
+  }
+  const result = await downloadTravelRule(address, txHash);
   if (result.url) return res.json(result);
+  res.status(502).json(result);
+});
+
+/** @deprecated use POST /compliance/travel-rule with txHash */
+apiRouter.get('/compliance/travel-rule/:address', async (req, res) => {
+  const txHash = req.query.txHash as string | undefined;
+  if (!txHash) {
+    return res.status(400).json({
+      error: 'txHash query param required — travel rule reports need a completed transfer hash',
+    });
+  }
+  const result = await downloadTravelRule(req.params.address, txHash);
+  if (result.url) return res.json(result);
+  res.status(502).json(result);
+});
+
+apiRouter.post('/faucet/cva', async (req, res) => {
+  const depositAddress = (req.body?.depositAddress ?? req.body?.address) as string | undefined;
+  const amount = String(req.body?.amount ?? 100);
+  if (!depositAddress) {
+    return res.status(400).json({ error: 'depositAddress required' });
+  }
+  const result = await requestCvaFaucet(depositAddress, amount);
+  if (result.txHash || result.amount) return res.json(result);
   res.status(502).json(result);
 });
 

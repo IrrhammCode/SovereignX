@@ -61,14 +61,41 @@ export async function verifyAPass(
   return { valid: false, code: res.code, message: res.message };
 }
 
-export async function downloadTravelRule(address: string): Promise<{ url?: string; error?: string }> {
-  const res = await cleanverseRequest<{ downloadUrl?: string }>('/download_travel_rule', {
-    chain: config.cleanverse.chain,
-    address,
-  });
+export async function downloadTravelRule(
+  address: string,
+  txHash: string,
+): Promise<{ url?: string; fileName?: string; error?: string }> {
+  const res = await cleanverseRequest<{ downloadUrl?: string; fileName?: string }>(
+    '/download_travel_rule',
+    {
+      txHash,
+      wallet: {
+        chain: config.cleanverse.chain,
+        address,
+      },
+    },
+  );
 
   if (res.code === '0000' && res.data?.downloadUrl) {
-    return { url: res.data.downloadUrl };
+    return { url: res.data.downloadUrl, fileName: res.data.fileName };
+  }
+
+  return { error: res.message };
+}
+
+export async function requestCvaFaucet(
+  depositAddress: string,
+  amount = '100',
+): Promise<{ txHash?: string; amount?: string; error?: string }> {
+  const res = await cleanverseRequest<{ tx_hash?: string; amount?: string }>('/faucet', {
+    chain: config.cleanverse.chain,
+    symbol: 'ausdc',
+    depositAddress,
+    amount,
+  });
+
+  if (res.code === '0000') {
+    return { txHash: res.data?.tx_hash, amount: res.data?.amount };
   }
 
   return { error: res.message };
