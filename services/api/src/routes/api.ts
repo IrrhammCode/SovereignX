@@ -9,7 +9,16 @@ import {
   exportAuditReportCSV,
   logTransfer,
 } from '../services/auditor.js';
+import {
+  isPoolRegistered,
+  verifyUserCompliance,
+  registerCompliancePool,
+  queryPoolRules,
+} from '../integrations/cleanverse/validator.js';
 import { config } from '../config.js';
+import { getDividendStatus } from '../services/dividends.js';
+import { createWalletClient, http } from 'viem';
+import { privateKeyToAccount } from 'viem/accounts';
 
 export const apiRouter = Router();
 
@@ -113,4 +122,62 @@ apiRouter.get('/audit/report', (req, res) => {
   }
 
   res.json(report);
+});
+
+apiRouter.get('/indexer/events', async (req, res) => {
+  const limit = req.query.limit ?? '50';
+  try {
+    const r = await fetch(`${config.indexerUrl}/events?limit=${limit}`);
+    if (!r.ok) throw new Error(`Indexer HTTP ${r.status}`);
+    res.json(await r.json());
+  } catch (e) {
+    res.status(502).json({
+      error: 'Indexer offline — run pnpm dev:indexer',
+      detail: e instanceof Error ? e.message : 'unknown',
+    });
+  }
+});
+
+apiRouter.get('/dividends/status', async (req, res) => {
+  const wallet = req.query.wallet as string | undefined;
+  res.json(await getDividendStatus(wallet));
+});
+
+apiRouter.get('/validator/status', async (_req, res) => {
+  const pool = config.validatorPool;
+  if (!pool) return res.status(400).json({ error: 'VALIDATOR_POOL_ADDRESS not configured' });
+  const status = await isPoolRegistered(pool);
+  let rules = null;
+  if (status.registered) {
+    const r = await queryPoolRules(pool);
+    rules = r.data?.rules ?? null;
+  }
+  res.json({ pool, ...status, rules });
+});
+
+apiRouter.post('/validator/register', async (_req, res) => {
+  const pool = config.validatorPool;
+  const pk = config.monad.deployerPrivateKey;
+  if (!pool || !pk) {
+    return res.status(400).json({ error: 'Pool address or deployer key not configured' });
+  }
+
+  const existing = await isPoolRegistered(pool);
+  if (existing.registered) {
+    return res.json({ alreadyRegistered: true, pool });
+  }
+
+  const account = privateKeyToAccount(pk);
+  const message = `${config.cleanverse.chain}${pool}`;
+  const walletClient = createWalletClient({
+    account,
+    transport: http(config.monad.rpcUrl),
+  });
+  const ownerSignature = await walletClient.signMessage({ message });
+
+  const result = await registerCompliancePool(pool, ownerSignature);
+  if (result.code === '0000') {
+    return res.json({ registered: true, pool, txHash: result.data?.tx_hash });
+  }
+  res.status(502).json({ code: result.code, message: result.message });
 });

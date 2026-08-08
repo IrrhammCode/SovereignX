@@ -25,4 +25,7 @@ export const config = {
       '0xaC0893567D43C3E7e6e35a72803df05416C1f20D',
   },
   travelRuleThresholdUsd: Number(process.env.TRAVEL_RULE_THRESHOLD_USD ?? 3000),
+  indexerUrl: process.env.INDEXER_URL ?? 'http://localhost:4001',
+  validatorPool:
+    process.env.VALIDATOR_POOL_ADDRESS ?? process.env.COMPLIANCE_ENGINE_ADDRESS ?? '',
 } as const;

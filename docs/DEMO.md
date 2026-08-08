@@ -42,6 +42,19 @@ pnpm dev:web   # :3000
 7. **Execute Transfer** — on-chain SOVX transfer on Monad
 8. **Show revert** — attempt transfer to unverified wallet → REVERT
 
+## Validator Pool (Cleanverse)
+
+Check status: `GET /api/validator/status`  
+Register pool: `POST /api/validator/register` (requires EIP-191 signature from on-chain `owner()`)
+
+**Note:** SovereignX `ComplianceEngine` uses AccessControl (no `owner()`). Automatic registration may return `Invalid contract owner signature` — use Cleanverse dashboard or redeploy with Ownable wrapper for production.
+
+```bash
+pnpm sync:env          # sync .env from deployments/monad.json
+pnpm register:validator # register via API (needs dev:api running)
+pnpm dev:indexer       # blockchain event indexer on :4001
+```
+
 ## API Endpoints
 
 - `GET /api/enrollment/magiclink` — A-Pass enrollment URL

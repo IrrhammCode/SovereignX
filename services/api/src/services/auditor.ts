@@ -1,5 +1,7 @@
 import type { AuditReport } from '@sovereignx/shared';
 import { randomUUID } from 'node:crypto';
+import { mkdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { dirname, resolve } from 'node:path';
 
 interface TransferLog {
   txHash: string;
@@ -11,10 +13,33 @@ interface TransferLog {
   timestamp: string;
 }
 
-const transferLogs: TransferLog[] = [];
+const storePath = resolve(
+  process.env.AUDIT_LOG_PATH ??
+    process.env.DATABASE_PATH?.replace(/\.db$/, '-audit.json') ??
+    './data/audit-logs.json',
+);
+
+const transferLogs: TransferLog[] = loadLogs();
+
+function loadLogs(): TransferLog[] {
+  try {
+    if (!existsSync(storePath)) return [];
+    const raw = readFileSync(storePath, 'utf8');
+    const parsed = JSON.parse(raw) as TransferLog[];
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+function persistLogs() {
+  mkdirSync(dirname(storePath), { recursive: true });
+  writeFileSync(storePath, JSON.stringify(transferLogs, null, 2));
+}
 
 export function logTransfer(entry: Omit<TransferLog, 'timestamp'>) {
   transferLogs.push({ ...entry, timestamp: new Date().toISOString() });
+  persistLogs();
 }
 
 export function generateAuditReport(from?: string, to?: string): AuditReport {

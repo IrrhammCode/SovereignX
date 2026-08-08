@@ -71,3 +71,27 @@ export const sovxTokenAbi = [
     stateMutability: 'nonpayable',
   },
 ] as const;
+
+export const dividendDistributorAbi = [
+  {
+    type: 'function',
+    name: 'cvaBalance',
+    inputs: [],
+    outputs: [{ type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    name: 'totalDistributed',
+    inputs: [],
+    outputs: [{ type: 'uint256' }],
+    stateMutability: 'view',
+  },
+  {
+    type: 'function',
+    name: 'claimedByWallet',
+    inputs: [{ name: '', type: 'address' }],
+    outputs: [{ type: 'uint256' }],
+    stateMutability: 'view',
+  },
+] as const;

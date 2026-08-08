@@ -14,8 +14,9 @@ app.get('/events', (req, res) => {
   res.json(getIndexedEvents(limit));
 });
 
-app.listen(PORT, async () => {
+app.listen(PORT, () => {
   console.log(`[SovereignX Indexer] listening on :${PORT}`);
-  await indexHistorical();
-  watchTransfers((e) => console.log('[indexer] Transfer', e.txHash));
+  indexHistorical()
+    .then(() => watchTransfers((e) => console.log('[indexer] Transfer', e.txHash)))
+    .catch((err) => console.error('[indexer] historical scan failed', err));
 });

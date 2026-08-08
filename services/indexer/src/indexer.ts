@@ -1,11 +1,16 @@
 import { loadRootEnv } from '@sovereignx/shared/load-env';
 loadRootEnv();
 
-import { createPublicClient, http, parseAbiItem, type Log } from 'viem';
+import { createPublicClient, http, decodeEventLog, parseAbiItem, type Log } from 'viem';
 import type { IndexedEvent } from '@sovereignx/shared';
+import { formatUnits } from 'viem';
 
 const RPC = process.env.MONAD_RPC_URL ?? 'https://testnet-rpc.monad.xyz';
 const SOVX = process.env.SOVX_TOKEN_ADDRESS as `0x${string}` | undefined;
+const FROM_BLOCK = process.env.INDEXER_FROM_BLOCK
+  ? BigInt(process.env.INDEXER_FROM_BLOCK)
+  : undefined;
+const LOOKBACK_BLOCKS = BigInt(process.env.INDEXER_LOOKBACK_BLOCKS ?? '5000');
 
 const TRANSFER = parseAbiItem(
   'event Transfer(address indexed from, address indexed to, uint256 value)',
@@ -18,37 +23,54 @@ export const publicClient = createPublicClient({
 });
 
 export function parseTransferLog(log: Log): IndexedEvent {
+  const decoded = decodeEventLog({
+    abi: [TRANSFER],
+    data: log.data,
+    topics: log.topics,
+  });
+
+  const args = decoded.args as { from: string; to: string; value: bigint };
+
   return {
     blockNumber: Number(log.blockNumber ?? 0n),
     txHash: log.transactionHash ?? '',
     event: 'Transfer',
     args: {
-      from: log.topics[1],
-      to: log.topics[2],
-      value: log.data,
+      from: args.from,
+      to: args.to,
+      value: args.value.toString(),
+      amountUsd: formatUnits(args.value, 6),
     },
     timestamp: Date.now(),
   };
 }
 
-export async function indexHistorical(fromBlock = 0n) {
+export async function indexHistorical(fromBlock?: bigint) {
   if (!SOVX) {
     console.warn('[indexer] SOVX_TOKEN_ADDRESS not set — running in stub mode');
     return;
   }
 
-  const logs = await publicClient.getLogs({
-    address: SOVX,
-    event: TRANSFER,
-    fromBlock,
-    toBlock: 'latest',
-  });
+  const latest = await publicClient.getBlockNumber();
+  const start = fromBlock ?? FROM_BLOCK ?? (latest > LOOKBACK_BLOCKS ? latest - LOOKBACK_BLOCKS : 0n);
+  const chunk = 100n;
 
-  for (const log of logs) {
-    events.push(parseTransferLog(log));
+  let total = 0;
+  for (let block = start; block <= latest; block += chunk) {
+    const toBlock = block + chunk - 1n > latest ? latest : block + chunk - 1n;
+    const logs = await publicClient.getLogs({
+      address: SOVX,
+      event: TRANSFER,
+      fromBlock: block,
+      toBlock: toBlock,
+    });
+    for (const log of logs) {
+      events.push(parseTransferLog(log));
+    }
+    total += logs.length;
   }
 
-  console.log(`[indexer] indexed ${logs.length} Transfer events`);
+  console.log(`[indexer] indexed ${total} Transfer events (blocks ${start}-${latest})`);
 }
 
 export function getIndexedEvents(limit = 50): IndexedEvent[] {

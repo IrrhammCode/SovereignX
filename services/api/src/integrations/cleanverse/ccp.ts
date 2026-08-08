@@ -1,6 +1,7 @@
 import type { ComplianceCheckResult, IVMS101Payload } from '@sovereignx/shared';
 import { createHash } from 'node:crypto';
-import { queryAPass, verifyAPass } from './apass.js';
+import { queryAPass } from './apass.js';
+import { verifyUserCompliance } from './validator.js';
 import { config } from '../../config.js';
 
 export async function runCCPCheck(
@@ -51,17 +52,43 @@ export async function runCCPCheck(
     };
   }
 
-  const cvaAddress = config.contracts.cvaStablecoin;
-  if (cvaAddress) {
-    const verify = await verifyAPass(from, cvaAddress);
-    if (!verify.valid) {
+  const pool = config.validatorPool;
+  if (pool) {
+    const [senderVerify, receiverVerify] = await Promise.all([
+      verifyUserCompliance(from, pool),
+      verifyUserCompliance(to, pool),
+    ]);
+    if (!senderVerify.valid) {
       return {
         allowed: false,
-        code: 'CCP_VERIFY',
-        message: verify.message,
+        code: 'VALIDATOR_SENDER',
+        message: senderVerify.message || 'Sender failed validator pool check',
         senderCVI,
         receiverCVI,
       };
+    }
+    if (!receiverVerify.valid) {
+      return {
+        allowed: false,
+        code: 'VALIDATOR_RECEIVER',
+        message: receiverVerify.message || 'Receiver failed validator pool check',
+        senderCVI,
+        receiverCVI,
+      };
+    }
+  } else {
+    const cvaAddress = config.contracts.cvaStablecoin;
+    if (cvaAddress) {
+      const verify = await verifyUserCompliance(from, cvaAddress);
+      if (!verify.valid) {
+        return {
+          allowed: false,
+          code: 'CCP_VERIFY',
+          message: verify.message,
+          senderCVI,
+          receiverCVI,
+        };
+      }
     }
   }
 

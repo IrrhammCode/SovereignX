@@ -80,3 +80,22 @@ export async function fetchTravelRule(address: string) {
   const res = await fetch(`${API}/api/compliance/travel-rule/${address}`);
   return res.json();
 }
+
+export async function fetchIndexerEvents(limit = 50) {
+  const res = await fetch(`${API}/api/indexer/events?limit=${limit}`);
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error ?? 'Indexer fetch failed');
+  return data as import('@sovereignx/shared').IndexedEvent[];
+}
+
+export async function fetchDividendStatus(wallet?: string) {
+  const params = wallet ? `?wallet=${wallet}` : '';
+  const res = await fetch(`${API}/api/dividends/status${params}`);
+  if (!res.ok) throw new Error('Dividend fetch failed');
+  return res.json();
+}
+
+export async function fetchValidatorStatus() {
+  const res = await fetch(`${API}/api/validator/status`);
+  return res.json();
+}

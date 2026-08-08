@@ -12,6 +12,8 @@ import { TransferPanel } from '@/components/TransferPanel';
 import { ComplianceStatusWidget } from '@/components/ComplianceStatusWidget';
 import { EnrollmentPanel } from '@/components/EnrollmentPanel';
 import { OraclePanel } from '@/components/OraclePanel';
+import { DividendPanel } from '@/components/dashboard/DividendPanel';
+import { ValidatorStatusPanel } from '@/components/dashboard/ValidatorStatusPanel';
 import { VerifiedInteractionCursor } from '@/components/VerifiedInteractionCursor';
 import { ConnectWallet } from '@/components/ConnectWallet';
 import { useSOVXBalance } from '@/lib/contracts';
@@ -23,6 +25,7 @@ const TAB_TITLES: Record<DashboardTab, string> = {
   vault: 'T-Bill Vault',
   transfer: 'Transfer SOVX',
   compliance: 'Compliance Center',
+  dividends: 'CVA Dividends',
   audit: 'Audit Logs',
   settings: 'Settings',
 };
@@ -54,7 +57,7 @@ export default function DashboardPage() {
         <div className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-emerald-500/20 py-24 text-center">
           <p className="mb-2 text-xl font-bold text-white">Connect Your Wallet</p>
           <p className="mb-6 max-w-md text-sm text-slate-400">
-            Connect MetaMask or WalletConnect on <strong>Monad Testnet</strong> to view SOVX balance,
+            Connect MetaMask on <strong>Monad Testnet</strong> to view SOVX balance,
             sync CVI via Cleanverse A-Pass, and execute compliant transfers.
           </p>
           <ConnectWallet />
@@ -81,6 +84,7 @@ export default function DashboardPage() {
               <OraclePanel />
             </div>
             <EnrollmentPanel />
+            <DividendPanel wallet={address} />
           </div>
         );
       case 'vault':
@@ -102,8 +106,11 @@ export default function DashboardPage() {
           <div className="grid gap-6 lg:grid-cols-2">
             <ComplianceStatusWidget address={address} />
             <EnrollmentPanel />
+            <ValidatorStatusPanel />
           </div>
         );
+      case 'dividends':
+        return <DividendPanel wallet={address} />;
       case 'audit':
         return <AuditLogPanel wallet={address} />;
       case 'settings':

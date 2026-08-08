@@ -11,7 +11,9 @@
     "build": "pnpm -r build",
     "test:contracts": "cd contracts && forge test",
     "deploy:testnet": "bash scripts/deploy-testnet.sh",
-    "save:deployments": "node scripts/save-deployments.mjs"
+    "save:deployments": "node scripts/save-deployments.mjs",
+    "sync:env": "node scripts/sync-env.mjs",
+    "register:validator": "node scripts/register-validator-pool.mjs"
   },
   "engines": {
     "node": ">=18"

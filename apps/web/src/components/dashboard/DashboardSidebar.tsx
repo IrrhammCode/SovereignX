@@ -9,13 +9,14 @@ import {
   FileText,
   Settings,
   Home,
+  Coins,
 } from 'lucide-react';
 import { SovereignVaultLogo } from '@/components/SovereignVaultLogo';
 import { ConnectWallet } from '@/components/ConnectWallet';
 import { cn } from '@/lib/utils';
 import { useAccount } from 'wagmi';
 
-export type DashboardTab = 'overview' | 'vault' | 'transfer' | 'compliance' | 'audit' | 'settings';
+export type DashboardTab = 'overview' | 'vault' | 'transfer' | 'compliance' | 'dividends' | 'audit' | 'settings';
 
 interface DashboardSidebarProps {
   active: DashboardTab;
@@ -27,6 +28,7 @@ const navItems: { id: DashboardTab; label: string; icon: typeof LayoutDashboard 
   { id: 'vault', label: 'Vault', icon: Vault },
   { id: 'transfer', label: 'Transfer', icon: ArrowLeftRight },
   { id: 'compliance', label: 'Compliance', icon: ShieldCheck },
+  { id: 'dividends', label: 'Dividends', icon: Coins },
   { id: 'audit', label: 'Audit Logs', icon: FileText },
   { id: 'settings', label: 'Settings', icon: Settings },
 ];
