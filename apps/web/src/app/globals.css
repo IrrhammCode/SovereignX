@@ -3,24 +3,46 @@
 @tailwind utilities;
 
 :root {
+  --sovereign-navy: #0a1628;
   --sovereign-blue: #002d62;
   --sovereign-green: #00a36c;
-  --sovereign-navy: #0a1628;
   --sovereign-glow: #00ff88;
 }
 
 body {
-  @apply bg-sovereign-navy text-gray-100 antialiased;
+  @apply bg-brand-dark text-slate-200 antialiased;
   background-image:
-    radial-gradient(ellipse at 20% 0%, rgba(0, 45, 98, 0.45) 0%, transparent 55%),
-    radial-gradient(ellipse at 80% 100%, rgba(0, 163, 108, 0.12) 0%, transparent 50%);
+    radial-gradient(ellipse 80% 50% at 50% -20%, rgba(0, 163, 108, 0.12), transparent),
+    radial-gradient(circle at 80% 60%, rgba(0, 45, 98, 0.35), transparent 50%);
+  background-attachment: fixed;
   min-height: 100vh;
 }
 
-.vault-panel {
-  @apply rounded-2xl border border-sovereign-green/20 bg-sovereign-vault/80 backdrop-blur-md shadow-vault;
+.glass-panel {
+  @apply rounded-3xl border border-emerald-500/10 bg-sovereign-glass backdrop-blur-xl;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+}
+
+.glass-pill {
+  @apply rounded-full border border-emerald-500/15 bg-emerald-500/5 backdrop-blur-md;
+}
+
+.text-gradient {
+  @apply bg-gradient-to-r from-emerald-200 via-emerald-400 to-emerald-600 bg-clip-text text-transparent;
 }
 
 .glow-text {
   text-shadow: 0 0 12px rgba(0, 255, 136, 0.45);
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 163, 108, 0.2);
+  border-radius: 3px;
+}
+
+.vault-panel {
+  @apply glass-panel;
 }

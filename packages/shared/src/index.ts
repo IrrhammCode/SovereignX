@@ -1,6 +1,5 @@
 /** SovereignX shared types */
 
-export { loadRootEnv } from './load-env.js';
 export { identityRegistryAbi, sovxTokenAbi } from './abis.js';
 
 export const SOVX_DECIMALS = 6;

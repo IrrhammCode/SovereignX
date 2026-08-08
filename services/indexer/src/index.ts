@@ -1,4 +1,4 @@
-import { loadRootEnv } from '@sovereignx/shared';
+import { loadRootEnv } from '@sovereignx/shared/load-env';
 loadRootEnv();
 
 import express from 'express';
