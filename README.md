@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🏛️ SovereignX (SOVX) — Fractionalized US T-Bills on Monad
+# SovereignX (SOVX) — Fractionalized US T-Bills on Monad
 
 > **Permissioned RWA tokenization with ERC-3643 compliance and Cleanverse CVI/CVA — toxic liquidity is mathematically impossible.**
 
@@ -16,20 +16,20 @@
 
 ---
 
-## ⏱️ How SovereignX Works in 10 Seconds
+## How SovereignX Works in 10 Seconds
 
 SovereignX turns US Treasury Bills into **$10 on-chain fractions (SOVX)** with cryptographic compliance:
 
 1. **User enrolls** Cleanverse A-Pass (CVI identity verification).
-2. ↓ **Relayer syncs** verified CVI to Monad `IdentityRegistry`.
-3. ↓ **User claims** demo SOVX or receives mint from agent.
-4. ↓ **CCP pre-check** validates sender, receiver, and amount off-chain.
-5. ↓ **On-chain transfer** runs ERC-3643 modifiers on Monad.
-6. ↓ **Failed compliance reverts atomically** — SOVX stays in the sender wallet.
+2. **Relayer syncs** verified CVI to Monad `IdentityRegistry`.
+3. **User claims** demo SOVX or receives mint from agent.
+4. **CCP pre-check** validates sender, receiver, and amount off-chain.
+5. **On-chain transfer** runs ERC-3643 modifiers on Monad.
+6. **Failed compliance reverts atomically** — SOVX stays in the sender wallet.
 
 ---
 
-## ⚡ Quick Start
+## Quick Start
 
 ```bash
 # 1. Clone
@@ -52,7 +52,7 @@ pnpm dev:web    # http://localhost:3000
 
 ---
 
-## 🌍 Project Overview
+## Project Overview
 
 **What is SovereignX?**  
 SovereignX (SOVX) is a **Real-World Asset (RWA)** protocol that fractionalizes US Treasury Bills into **$10 permissioned tokens** on **Monad**, enforcing **ERC-3643** transfer rules and **Cleanverse** compliance (CVI, CVA, CCP).
@@ -71,7 +71,7 @@ By binding **Cleanverse CVI (A-Pass)** to **IdentityRegistry**, running **CCP pr
 
 ---
 
-## 🌐 Live Deployment (Monad Testnet)
+## Live Deployment (Monad Testnet)
 
 | Resource | URL |
 |----------|-----|
@@ -90,7 +90,7 @@ By binding **Cleanverse CVI (A-Pass)** to **IdentityRegistry**, running **CCP pr
 
 ---
 
-## 👩‍⚖️ For Judges (Self-Serve Demo)
+## For Judges (Self-Serve Demo)
 
 No private keys required. Any MetaMask wallet works:
 
@@ -109,7 +109,7 @@ No private keys required. Any MetaMask wallet works:
 
 ---
 
-## 📂 Repository Structure
+## Repository Structure
 
 | Component | Directory | Description |
 |-----------|-----------|-------------|
@@ -138,7 +138,7 @@ SovereignX/
 
 ---
 
-## 🚨 Problem Statement
+## Problem Statement
 
 Tokenized RWAs on public blockchains inherit a structural compliance failure:
 
@@ -150,7 +150,7 @@ Tokenized RWAs on public blockchains inherit a structural compliance failure:
 
 ---
 
-## 💡 Solution
+## Solution
 
 SovereignX enforces compliance **cryptographically on Monad**:
 
@@ -167,7 +167,7 @@ SovereignX enforces compliance **cryptographically on Monad**:
 
 ---
 
-## 💎 Key Features
+## Key Features
 
 - **$10 minimum fraction** — whole $10 SOVX blocks only (6 decimals).
 - **CVI-gated mint / transfer / burn** — both parties must be verified on-chain.
@@ -180,7 +180,7 @@ SovereignX enforces compliance **cryptographically on Monad**:
 
 ---
 
-## 🏆 Hackathon Track Response: RWA (Verified)
+## Hackathon Track Response: RWA (Verified)
 
 **Cleanverse Build Hackathon — Track 01: RWA (Real-World Assets, Verified)**
 
@@ -194,7 +194,7 @@ SovereignX enforces compliance **cryptographically on Monad**:
 | **How** | IdentityRegistry + ComplianceEngine + atomic revert on any failed modifier |
 
 <details>
-<summary>🔎 Proof of Implementation (Code Evidence)</summary>
+<summary>Proof of Implementation (Code Evidence)</summary>
 
 - **Permissioned transfer modifiers:** [`SovereignXTBill.sol` — `onlyVerifiedSender` / `onlyVerifiedReceiver`](./contracts/src/token/SovereignXTBill.sol)
 - **Atomic revert on CCP failure:** [`SovereignXTBill.sol` — `withFailureStateSafety`](./contracts/src/token/SovereignXTBill.sol)
@@ -211,7 +211,7 @@ SovereignX enforces compliance **cryptographically on Monad**:
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 ```text
 ┌─────────────────────────────────────────────────────────────────┐
@@ -246,7 +246,7 @@ See full diagram: [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md)
 
 ---
 
-## ⚙️ Protocol Execution Flow
+## Protocol Execution Flow
 
 ### A. Enrollment & Claim (Judge Path)
 
@@ -271,7 +271,7 @@ See full diagram: [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md)
 
 ---
 
-## 🛠️ Technology Stack
+## Technology Stack
 
 | Layer | Technology | Purpose |
 |-------|------------|---------|
@@ -288,7 +288,7 @@ See full diagram: [docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md)
 
 ---
 
-## 🔐 Smart Contract Architecture
+## Smart Contract Architecture
 
 | Contract | Role |
 |----------|------|
@@ -306,7 +306,7 @@ onlyVerifiedSender → onlyVerifiedReceiver → withComplianceRules → withFail
 
 ---
 
-## 📡 API Endpoints
+## API Endpoints
 
 | Method | Path | Description |
 |--------|------|-------------|
@@ -331,7 +331,7 @@ onlyVerifiedSender → onlyVerifiedReceiver → withComplianceRules → withFail
 
 ---
 
-## 💻 Installation Guide
+## Installation Guide
 
 **Prerequisites:** [Foundry](https://book.getfoundry.sh/), Node.js ≥ 18, pnpm ≥ 9
 
@@ -351,7 +351,7 @@ pnpm sync:env
 
 ---
 
-## 🔑 Environment Variables
+## Environment Variables
 
 ```ini
 # Cleanverse Cooperate API v5.6
@@ -395,7 +395,7 @@ pnpm generate:vercel-api-env
 
 ---
 
-## 🚀 Running the Project
+## Running the Project
 
 ```bash
 # Terminal 1 — API
@@ -415,7 +415,7 @@ pnpm dev:indexer      # http://localhost:4001
 
 ---
 
-## 🧪 Testing
+## Testing
 
 ```bash
 # Smart contract unit tests
@@ -433,7 +433,7 @@ curl http://localhost:4000/api/health
 
 ---
 
-## 📤 Deployment
+## Deployment
 
 | Target | Guide |
 |--------|-------|
@@ -454,7 +454,7 @@ forge script script/PostDeploy.s.sol --rpc-url $MONAD_RPC_URL --broadcast
 
 ---
 
-## 📜 Example: CCP Audit Log Entry
+## Example: CCP Audit Log Entry
 
 ```json
 {
@@ -474,18 +474,18 @@ Export full report: `GET /api/audit/report?format=download`
 
 ---
 
-## 💼 Core Use Cases
+## Core Use Cases
 
-- 🏦 **Fractional T-Bill exposure** — $10 minimum blocks for retail access.
-- 🛡️ **Permissioned RWA settlement** — verified-only transfers on Monad.
-- 📋 **Regulatory audit trail** — CCP logs + on-chain event correlation.
-- 🌐 **Cross-border travel rule** — IVMS 101 for institutional reporting.
-- 💰 **Verified dividend rail** — CVA payouts to CVI-synced SOVX holders.
-- 🧪 **Hackathon demo** — self-serve judge flow with demo SOVX faucet.
+- **Fractional T-Bill exposure** — $10 minimum blocks for retail access.
+- **Permissioned RWA settlement** — verified-only transfers on Monad.
+- **Regulatory audit trail** — CCP logs + on-chain event correlation.
+- **Cross-border travel rule** — IVMS 101 for institutional reporting.
+- **Verified dividend rail** — CVA payouts to CVI-synced SOVX holders.
+- **Hackathon demo** — self-serve judge flow with demo SOVX faucet.
 
 ---
 
-## 🔭 Future Vision
+## Future Vision
 
 - **Mainnet deployment** with audited contracts and institutional mint pipeline.
 - **Persistent event store** (Postgres) replacing ephemeral Heroku filesystem.
@@ -495,7 +495,7 @@ Export full report: `GET /api/audit/report?format=download`
 
 ---
 
-## 🗺️ Roadmap
+## Roadmap
 
 | Phase | Milestone |
 |-------|-----------|
@@ -505,7 +505,7 @@ Export full report: `GET /api/audit/report?format=download`
 
 ---
 
-## 📚 Documentation
+## Documentation
 
 | Doc | Description |
 |-----|-------------|
@@ -518,7 +518,7 @@ Export full report: `GET /api/audit/report?format=download`
 
 ---
 
-## 🎥 Demo
+## Demo
 
 | Resource | Link |
 |----------|------|
@@ -528,7 +528,7 @@ Export full report: `GET /api/audit/report?format=download`
 
 ---
 
-## 📋 Scripts Reference
+## Scripts Reference
 
 | Command | Description |
 |---------|-------------|
@@ -546,7 +546,7 @@ Export full report: `GET /api/audit/report?format=download`
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repo and create a branch from `main`.
 2. Run `forge test` for contract changes.
@@ -555,7 +555,7 @@ Export full report: `GET /api/audit/report?format=download`
 
 ---
 
-## 🔐 Security Disclosure
+## Security Disclosure
 
 SovereignX is a **hackathon / testnet** project. **Do not deploy mainnet funds without professional smart contract audits.**
 
@@ -567,7 +567,7 @@ Report vulnerabilities privately — do not open public issues for exploit detai
 
 ---
 
-## ⚠️ Known Limitations
+## Known Limitations
 
 - **Validator pool auto-registration** may fail (`ComplianceEngine` uses AccessControl, not `owner()`) — register via Cleanverse dashboard for production.
 - **Heroku ephemeral disk** — faucet claim records and audit logs reset on dyno restart unless persistent storage is added.
@@ -577,7 +577,7 @@ Report vulnerabilities privately — do not open public issues for exploit detai
 
 ---
 
-## 🆘 Troubleshooting
+## Troubleshooting
 
 | Issue | Fix |
 |-------|-----|
@@ -590,13 +590,13 @@ Report vulnerabilities privately — do not open public issues for exploit detai
 
 ---
 
-## 📄 License
+## License
 
 MIT — SovereignX Hackathon Build 2026. See [LICENSE](./LICENSE) if present.
 
 ---
 
-## 🙌 Credits
+## Credits
 
 - **Cleanverse Build Hackathon** — Track 01: RWA (Verified)
 - **Monad** — High-performance EVM testnet
@@ -608,7 +608,7 @@ MIT — SovereignX Hackathon Build 2026. See [LICENSE](./LICENSE) if present.
 
 <div align="center">
 
-**Built with ❤️ for verifiable RWAs on Monad**
+**SovereignX — verifiable RWAs on Monad**
 
 [Live App](https://sovereign-x-web.vercel.app) · [API Health](https://sovereignx-287a5c8c5f63.herokuapp.com/api/health) · [GitHub](https://github.com/IrrhammCode/SovereignX)
 
