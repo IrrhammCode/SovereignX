@@ -1,8 +1,8 @@
 'use client';
 
-import { useAuth, SignInButton, UserButton } from '@clerk/nextjs';
-import { useAccount } from 'wagmi';
-import { CheckCircle2, Wallet, Mail } from 'lucide-react';
+import { useAuth, SignInButton, UserButton, useClerk } from '@clerk/nextjs';
+import { useAccount, useDisconnect } from 'wagmi';
+import { CheckCircle2, Wallet, Mail, LogOut } from 'lucide-react';
 import { ConnectWallet } from '@/components/ConnectWallet';
 import { GlowCard } from '@/components/ui/GlowCard';
 import { cn } from '@/lib/utils';
@@ -59,6 +59,41 @@ function StepRow({
       {active && !done && children}
       {done && (
         <p className="text-xs font-medium text-emerald-400">Completed</p>
+      )}
+    </div>
+  );
+}
+
+function SessionLogoutControls({ className }: { className?: string }) {
+  const { isSignedIn } = useAuth();
+  const { signOut } = useClerk();
+  const { isConnected } = useAccount();
+  const { disconnect, isPending: disconnecting } = useDisconnect();
+
+  if (!isSignedIn && !isConnected) return null;
+
+  return (
+    <div className={cn('flex flex-wrap items-center justify-center gap-2', className)}>
+      {isConnected && (
+        <button
+          type="button"
+          disabled={disconnecting}
+          onClick={() => disconnect()}
+          className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-500/20 px-3 py-1.5 text-xs font-medium text-slate-400 transition hover:border-red-500/30 hover:bg-red-500/10 hover:text-red-300 disabled:opacity-50"
+        >
+          <LogOut className="h-3.5 w-3.5" />
+          Disconnect wallet
+        </button>
+      )}
+      {isSignedIn && (
+        <button
+          type="button"
+          onClick={() => signOut({ redirectUrl: '/dashboard' })}
+          className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-500/20 px-3 py-1.5 text-xs font-medium text-slate-400 transition hover:border-red-500/30 hover:bg-red-500/10 hover:text-red-300"
+        >
+          <LogOut className="h-3.5 w-3.5" />
+          Sign out Google
+        </button>
       )}
     </div>
   );
@@ -134,6 +169,8 @@ export function DualAuthGate({ children, className }: DualAuthGateProps) {
           <Wallet className="h-3.5 w-3.5" />
           <span>Step {currentStep} of 2</span>
         </div>
+
+        <SessionLogoutControls className="mt-4 border-t border-emerald-500/10 pt-4" />
       </GlowCard>
     </div>
   );
@@ -142,52 +179,104 @@ export function DualAuthGate({ children, className }: DualAuthGateProps) {
 /** Navbar: Step 1 MetaMask → Step 2 Google */
 export function DualAuthControls({ className }: { className?: string }) {
   const { isSignedIn } = useAuth();
+  const { signOut } = useClerk();
   const { isConnected, address } = useAccount();
+  const { disconnect, isPending: disconnecting } = useDisconnect();
   const walletDone = isConnected && !!address;
 
   if (!walletDone) {
     return (
-      <div className={cn('flex items-center gap-2', className)}>
-        <ConnectWallet />
-        <span className="hidden text-[10px] font-medium text-amber-300/90 sm:inline">
-          1/2 Wallet
-        </span>
+      <div className={cn('flex flex-col items-end gap-2', className)}>
+        <div className="flex items-center gap-2">
+          <ConnectWallet />
+          {!isSignedIn ? (
+            <span className="hidden text-[10px] font-medium text-amber-300/90 sm:inline">
+              1/2 Wallet
+            </span>
+          ) : (
+            <span className="hidden text-[10px] font-medium text-emerald-400/90 sm:inline">
+              Google OK · connect wallet
+            </span>
+          )}
+        </div>
+        {isSignedIn && (
+          <button
+            type="button"
+            onClick={() => signOut({ redirectUrl: '/dashboard' })}
+            className="inline-flex items-center gap-1 text-[10px] text-slate-500 hover:text-red-300"
+          >
+            <LogOut className="h-3 w-3" />
+            Sign out Google
+          </button>
+        )}
       </div>
     );
   }
 
   if (!isSignedIn) {
     return (
-      <div className={cn('flex items-center gap-2', className)}>
-        <span className="hidden rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 font-mono text-[10px] text-emerald-300 sm:inline">
-          {address!.slice(0, 6)}…{address!.slice(-4)}
-        </span>
-        <SignInButton mode="redirect" forceRedirectUrl="/dashboard">
+      <div className={cn('flex flex-col items-end gap-2', className)}>
+        <div className="flex items-center gap-2">
+          <span className="hidden rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 font-mono text-[10px] text-emerald-300 sm:inline">
+            {address!.slice(0, 6)}…{address!.slice(-4)}
+          </span>
           <button
             type="button"
-            className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-[#132238] px-4 py-2 text-xs font-semibold text-white transition hover:border-emerald-500/50 hover:bg-emerald-500/10"
+            disabled={disconnecting}
+            onClick={() => disconnect()}
+            title="Disconnect wallet"
+            className="inline-flex items-center gap-1 rounded-full border border-emerald-500/20 px-2.5 py-1.5 text-[10px] text-slate-400 hover:border-red-500/30 hover:text-red-300 disabled:opacity-50"
           >
-            <Mail className="h-3.5 w-3.5" />
-            Google Sign In
+            <LogOut className="h-3 w-3" />
+            <span className="hidden sm:inline">Wallet</span>
           </button>
-        </SignInButton>
-        <span className="hidden text-[10px] font-medium text-amber-300/90 sm:inline">
-          2/2 Google
-        </span>
+          <SignInButton mode="redirect" forceRedirectUrl="/dashboard">
+            <button
+              type="button"
+              className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-[#132238] px-4 py-2 text-xs font-semibold text-white transition hover:border-emerald-500/50 hover:bg-emerald-500/10"
+            >
+              <Mail className="h-3.5 w-3.5" />
+              Google Sign In
+            </button>
+          </SignInButton>
+          <span className="hidden text-[10px] font-medium text-amber-300/90 sm:inline">
+            2/2 Google
+          </span>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className={cn('flex items-center gap-2', className)}>
-      <span className="hidden rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 font-mono text-[10px] text-emerald-300 sm:inline">
-        {address!.slice(0, 6)}…{address!.slice(-4)}
-      </span>
-      <UserButton
-        appearance={{
-          elements: { avatarBox: 'h-9 w-9 ring-2 ring-emerald-500/30' },
-        }}
-      />
+    <div className={cn('flex flex-col items-end gap-2', className)}>
+      <div className="flex items-center gap-2">
+        <span className="hidden rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 font-mono text-[10px] text-emerald-300 sm:inline">
+          {address!.slice(0, 6)}…{address!.slice(-4)}
+        </span>
+        <button
+          type="button"
+          disabled={disconnecting}
+          onClick={() => disconnect()}
+          title="Disconnect wallet"
+          className="inline-flex items-center gap-1 rounded-full border border-emerald-500/20 px-2.5 py-1.5 text-[10px] text-slate-400 hover:border-red-500/30 hover:text-red-300 disabled:opacity-50"
+        >
+          <LogOut className="h-3 w-3" />
+          <span className="hidden sm:inline">Wallet</span>
+        </button>
+        <UserButton
+          appearance={{
+            elements: { avatarBox: 'h-9 w-9 ring-2 ring-emerald-500/30' },
+          }}
+        />
+      </div>
+      <button
+        type="button"
+        onClick={() => signOut({ redirectUrl: '/dashboard' })}
+        className="inline-flex items-center gap-1 text-[10px] text-slate-500 hover:text-red-300"
+      >
+        <LogOut className="h-3 w-3" />
+        Sign out Google
+      </button>
     </div>
   );
 }
