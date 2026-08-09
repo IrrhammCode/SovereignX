@@ -6,7 +6,7 @@ export const config = {
   port: Number(process.env.PORT ?? process.env.API_PORT ?? 4000),
   corsOrigins: (process.env.ALLOWED_ORIGINS ?? '*')
     .split(',')
-    .map((s) => s.trim())
+    .map((s) => s.trim().replace(/\/$/, ''))
     .filter(Boolean),
   cleanverse: {
     apiId: process.env.CLEANVERSE_API_ID ?? '',

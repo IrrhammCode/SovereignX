@@ -10,7 +10,12 @@ export function createApiApp() {
   const corsOrigin =
     config.corsOrigins.length === 1 && config.corsOrigins[0] === '*'
       ? true
-      : config.corsOrigins;
+      : (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
+          if (!origin) return callback(null, true);
+          const normalized = origin.replace(/\/$/, '');
+          const allowed = config.corsOrigins.some((o) => o === normalized || o === origin);
+          callback(null, allowed);
+        };
 
   app.use(cors({ origin: corsOrigin }));
   app.use(express.json());
