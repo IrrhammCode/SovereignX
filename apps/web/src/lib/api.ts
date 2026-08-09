@@ -124,3 +124,35 @@ export async function fetchValidatorStatus() {
   const res = await fetch(`${API}/api/validator/status`);
   return res.json();
 }
+
+export interface SovxFaucetStatus {
+  wallet: string;
+  eligible: boolean;
+  claimed: boolean;
+  fractions: number;
+  amountUsd: number;
+  reason?: string;
+  txHash?: string;
+  claimedAt?: string;
+}
+
+export async function fetchSovxFaucetStatus(wallet: string): Promise<SovxFaucetStatus> {
+  const res = await fetch(`${API}/api/faucet/sovx/status?wallet=${encodeURIComponent(wallet)}`);
+  if (!res.ok) throw new Error('SOVX faucet status fetch failed');
+  return res.json();
+}
+
+export async function claimDemoSovx(wallet: string): Promise<{
+  txHash?: string;
+  amountUsd?: number;
+  fractions?: number;
+  error?: string;
+  alreadyClaimed?: boolean;
+}> {
+  const res = await fetch(`${API}/api/faucet/sovx`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ wallet }),
+  });
+  return res.json();
+}

@@ -20,6 +20,7 @@ import { getDividendStatus } from '../services/dividends.js';
 import { depositCvaToDistributor } from '../services/dividend-deposit.js';
 import { getProtocolStats } from '../services/protocol.js';
 import { fetchChainTransferEvents, ingestTransferFromTx } from '../services/chain-events.js';
+import { claimDemoSovx, getSovxFaucetStatus } from '../services/sovx-faucet.js';
 import { createWalletClient, http } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 
@@ -155,6 +156,25 @@ apiRouter.post('/faucet/cva', async (req, res) => {
   const result = await requestCvaFaucet(depositAddress, amount);
   if (result.txHash || result.amount) return res.json(result);
   res.status(502).json(result);
+});
+
+apiRouter.get('/faucet/sovx/status', async (req, res) => {
+  const wallet = req.query.wallet as string | undefined;
+  if (!wallet) {
+    return res.status(400).json({ error: 'wallet query param required' });
+  }
+  res.json(await getSovxFaucetStatus(wallet));
+});
+
+apiRouter.post('/faucet/sovx', async (req, res) => {
+  const wallet = (req.body?.wallet ?? req.body?.address) as string | undefined;
+  if (!wallet) {
+    return res.status(400).json({ error: 'wallet required' });
+  }
+  const result = await claimDemoSovx(wallet);
+  if (result.txHash) return res.json(result);
+  const status = result.alreadyClaimed ? 409 : 502;
+  res.status(status).json(result);
 });
 
 apiRouter.post('/compliance/log-transfer', async (req, res) => {

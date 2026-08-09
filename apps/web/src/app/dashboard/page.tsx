@@ -11,6 +11,7 @@ import { AssetBlockGrid } from '@/components/AssetBlockGrid';
 import { TransferPanel } from '@/components/TransferPanel';
 import { ComplianceStatusWidget } from '@/components/ComplianceStatusWidget';
 import { EnrollmentPanel } from '@/components/EnrollmentPanel';
+import { SovxClaimPanel } from '@/components/SovxClaimPanel';
 import { OraclePanel } from '@/components/OraclePanel';
 import { DividendPanel } from '@/components/dashboard/DividendPanel';
 import { ValidatorStatusPanel } from '@/components/dashboard/ValidatorStatusPanel';
@@ -72,6 +73,7 @@ export default function DashboardPage() {
               <OraclePanel />
             </div>
             <EnrollmentPanel />
+            <SovxClaimPanel address={address} />
             <DividendPanel wallet={address} />
           </div>
         );
@@ -85,7 +87,10 @@ export default function DashboardPage() {
       case 'transfer':
         return (
           <div className="grid gap-6 lg:grid-cols-2">
-            <TransferPanel address={address} />
+            <div className="space-y-6">
+              <SovxClaimPanel address={address} />
+              <TransferPanel address={address} />
+            </div>
             <ComplianceStatusWidget address={address} />
           </div>
         );

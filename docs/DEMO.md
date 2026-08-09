@@ -33,14 +33,23 @@ pnpm dev:web   # :3000
 
 ## Demo Script (5 min)
 
-1. **Connect wallet** — deployer or enrolled wallet on Monad testnet
+1. **Connect wallet** on Monad testnet
 2. **Enroll CVI** — open A-Pass magiclink from Enrollment panel
 3. **Sync CVI** — click "Sync CVI On-Chain" (or `POST /api/cvi/sync`)
-4. **Show balance** — deployer holds 100 × $10 SOVX fractions ($1,000)
-5. **Register recipient** — enroll + sync second wallet
+4. **Claim demo SOVX** — "Claim 2 × $10 SOVX" (verified wallets only, once per wallet)
+5. **Register recipient** — enroll + sync second wallet (also claim demo SOVX)
 6. **CCP Pre-Check** — transfer $10+ between verified wallets
 7. **Execute Transfer** — on-chain SOVX transfer on Monad
 8. **Show revert** — attempt transfer to unverified wallet → REVERT
+
+## For Judges (self-serve)
+
+1. Open https://sovereign-x-web.vercel.app
+2. Connect MetaMask on **Monad Testnet** (chain 10143)
+3. Enroll **A-Pass** → **Sync CVI** → **Claim demo SOVX**
+4. Transfer $10 to another verified wallet (or watch demo video for full flow)
+
+No private keys required.
 
 ## Validator Pool (Cleanverse)
 
@@ -54,6 +63,7 @@ pnpm sync:env          # sync .env from deployments/monad.json
 pnpm register:validator # register via API (needs dev:api running)
 pnpm dev:indexer       # blockchain event indexer on :4001
 pnpm faucet:cva 0xYourWallet 100  # request test CVA from Cleanverse
+pnpm faucet:sovx 0xYourWallet    # claim demo SOVX (after CVI sync)
 pnpm deposit:dividends # seed CVA dividend pool (needs deployer CVA balance)
 ```
 
@@ -61,6 +71,8 @@ pnpm deposit:dividends # seed CVA dividend pool (needs deployer CVA balance)
 
 - `GET /api/enrollment/magiclink` — A-Pass enrollment URL
 - `POST /api/cvi/sync` — `{ "wallet": "0x..." }`
+- `GET /api/faucet/sovx/status?wallet=0x...` — demo SOVX claim eligibility
+- `POST /api/faucet/sovx` — `{ "wallet": "0x..." }` mint 2× $10 SOVX (verified, once)
 - `POST /api/compliance/pre-check` — CCP + IVMS 101
 - `GET /api/audit/report?format=download` — compliance audit export
 

@@ -78,15 +78,34 @@ Heroku akan:
 2. `heroku-postbuild` → build shared + api
 3. Start `Procfile` → `node services/api/dist/index.js`
 
-### Opsi B · Docker
+### Opsi B · Container (Docker) — **tanpa Docker lokal**
+
+Heroku build image dari `Dockerfile.api` via `heroku.yml`. **Tidak perlu** `docker ps` di laptop.
 
 ```bash
-heroku stack:set container -a sovereignx-api
-heroku git:remote -a sovereignx-api
+brew install heroku/brew/heroku   # sudah terinstall
+heroku login                      # browser login, sekali saja
+./scripts/deploy-heroku-container.sh NAMA-APP-KAMU
+```
+
+Manual:
+
+```bash
+heroku stack:set container -a NAMA-APP-KAMU
+heroku git:remote -a NAMA-APP-KAMU
 git push heroku main
 ```
 
-Pakai `heroku.yml` + `Dockerfile.api`.
+### Opsi C · Container Registry CLI (butuh Docker Desktop lokal)
+
+Hanya kalau sudah install [Docker Desktop](https://www.docker.com/products/docker-desktop/):
+
+```bash
+heroku login
+heroku container:login
+heroku container:push web -a NAMA-APP-KAMU -f Dockerfile.api
+heroku container:release web -a NAMA-APP-KAMU
+```
 
 ---
 
