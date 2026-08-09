@@ -19,6 +19,7 @@ import { config } from '../config.js';
 import { getDividendStatus } from '../services/dividends.js';
 import { depositCvaToDistributor } from '../services/dividend-deposit.js';
 import { getProtocolStats } from '../services/protocol.js';
+import { fetchChainTransferEvents, ingestTransferFromTx } from '../services/chain-events.js';
 import { createWalletClient, http } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 
@@ -161,6 +162,7 @@ apiRouter.post('/compliance/log-transfer', async (req, res) => {
   logTransfer({ txHash, from, to, amount, ccpPassed, ivms101 });
 
   if (txHash?.startsWith('0x')) {
+    ingestTransferFromTx(txHash as `0x${string}`).catch(() => null);
     fetch(`${config.indexerUrl}/ingest`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -193,14 +195,13 @@ apiRouter.get('/audit/report', (req, res) => {
 });
 
 apiRouter.get('/indexer/events', async (req, res) => {
-  const limit = req.query.limit ?? '50';
+  const limit = Number(req.query.limit ?? 50);
   try {
-    const r = await fetch(`${config.indexerUrl}/events?limit=${limit}`);
-    if (!r.ok) throw new Error(`Indexer HTTP ${r.status}`);
-    res.json(await r.json());
+    const events = await fetchChainTransferEvents(limit);
+    res.json(events);
   } catch (e) {
     res.status(502).json({
-      error: 'Indexer offline — run pnpm dev:indexer',
+      error: 'Failed to fetch on-chain Transfer events',
       detail: e instanceof Error ? e.message : 'unknown',
     });
   }

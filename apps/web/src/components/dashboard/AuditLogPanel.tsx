@@ -115,13 +115,11 @@ export function AuditLogPanel({ wallet }: AuditLogPanelProps) {
         <div className="mb-4 flex items-center gap-2">
           <Link2 className="h-5 w-5 text-brand-primary" />
           <h3 className="text-lg font-bold text-white">On-Chain SOVX Transfers</h3>
-          <span className="text-xs text-slate-500">via indexer</span>
+          <span className="text-xs text-slate-500">via Monad RPC</span>
         </div>
 
         {indexerError && (
-          <p className="mb-4 text-sm text-yellow-400">
-            {indexerError} — run <code className="text-emerald-400">pnpm dev:indexer</code>
-          </p>
+          <p className="mb-4 text-sm text-yellow-400">{indexerError}</p>
         )}
 
         <div className="space-y-3">
@@ -129,9 +127,12 @@ export function AuditLogPanel({ wallet }: AuditLogPanelProps) {
             <p className="text-sm text-slate-500">No indexed Transfer events yet.</p>
           ) : (
             chainEvents.map((e) => (
-              <div
+              <a
                 key={`${e.txHash}-${e.blockNumber}`}
-                className="rounded-xl border border-emerald-500/10 bg-black/30 p-4 text-sm"
+                href={`https://testnet.monadscan.com/tx/${e.txHash}`}
+                target="_blank"
+                rel="noreferrer"
+                className="block rounded-xl border border-emerald-500/10 bg-black/30 p-4 text-sm transition hover:border-emerald-500/30"
               >
                 <p className="font-medium text-white">
                   Block {e.blockNumber} · {(e.args.amountUsd as string) ?? '—'} SOVX
@@ -140,7 +141,7 @@ export function AuditLogPanel({ wallet }: AuditLogPanelProps) {
                 <p className="mt-1 text-xs text-slate-400">
                   {(e.args.from as string)?.slice(0, 10)}… → {(e.args.to as string)?.slice(0, 10)}…
                 </p>
-              </div>
+              </a>
             ))
           )}
         </div>
