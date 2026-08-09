@@ -1,0 +1,32 @@
+# Render.com — FREE tier (no Railway payment needed)
+# Dashboard → New → Blueprint → connect GitHub repo
+# Or: New Web Service → Docker → Dockerfile.api → Plan: Free
+
+services:
+  - type: web
+    name: sovereignx-api
+    runtime: docker
+    dockerfilePath: ./Dockerfile.api
+    plan: free
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONAD_RPC_URL
+        value: https://testnet-rpc.monad.xyz
+      - key: MONAD_CHAIN_ID
+        value: "10143"
+      - key: SOVX_TOKEN_ADDRESS
+        value: 0x03f6E30518347135049be7ABc901f727489E79A0
+      - key: IDENTITY_REGISTRY_ADDRESS
+        value: 0x935AbfE82F9Abcc99a25f8252230d991887eB36d
+      - key: COMPLIANCE_ENGINE_ADDRESS
+        value: 0x622fBD1835B855334A2033ebF61Ad56f3d095286
+      - key: DIVIDEND_DISTRIBUTOR_ADDRESS
+        value: 0x62059f45007d65Ff127128b8Bb2f77d93aAfca11
+      - key: CVA_STABLECOIN_ADDRESS
+        value: 0xaC0893567D43C3E7e6e35a72803df05416C1f20D
+      - key: INDEXER_FROM_BLOCK
+        value: "51873800"
+      # Add secrets in Render Dashboard (sync from env/vercel.api.env):
+      # CLEANVERSE_API_ID, CLEANVERSE_API_KEY, DEPLOYER_PRIVATE_KEY

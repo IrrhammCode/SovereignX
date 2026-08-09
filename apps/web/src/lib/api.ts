@@ -1,6 +1,15 @@
 import type { CVIRecord, ComplianceCheckResult, IVMS101Payload } from '@sovereignx/shared';
 
-const API = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000';
+/** Same-origin on Vercel when NEXT_PUBLIC_API_URL is unset (free single deploy) */
+function apiBase(): string {
+  const configured = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, '');
+  if (configured) return configured;
+  if (typeof window !== 'undefined') return '';
+  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
+  return 'http://localhost:4000';
+}
+
+const API = apiBase();
 
 export async function fetchCVI(address: string): Promise<CVIRecord | null> {
   const res = await fetch(`${API}/api/cvi/${address}`);

@@ -4,7 +4,7 @@ loadRootEnv();
 import express from 'express';
 import { getIndexedEvents, indexHistorical, ingestFromTxHash, watchTransfers } from './indexer.js';
 
-const PORT = Number(process.env.INDEXER_PORT ?? 4001);
+const PORT = Number(process.env.PORT ?? process.env.INDEXER_PORT ?? 4001);
 const app = express();
 app.use(express.json());
 

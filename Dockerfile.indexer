@@ -1,0 +1,25 @@
+# SovereignX Indexer — optional second Railway service
+# Build: docker build -f Dockerfile.indexer -t sovereignx-indexer .
+
+FROM node:20-alpine
+RUN corepack enable && corepack prepare pnpm@10.28.2 --activate
+
+WORKDIR /app
+
+COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
+COPY packages/shared/package.json ./packages/shared/
+COPY services/indexer/package.json ./services/indexer/
+
+RUN pnpm install --frozen-lockfile
+
+COPY packages/shared ./packages/shared
+COPY services/indexer ./services/indexer
+COPY deployments ./deployments
+
+RUN pnpm --filter @sovereignx/shared build && pnpm --filter @sovereignx/indexer build
+
+WORKDIR /app/services/indexer
+ENV NODE_ENV=production
+
+EXPOSE 4001
+CMD ["node", "dist/index.js"]

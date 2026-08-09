@@ -18,7 +18,9 @@
     "deposit:dividends": "node scripts/deposit-dividend-pool.mjs",
     "faucet:cva": "node scripts/request-cva-faucet.mjs",
     "generate:vercel-env": "node scripts/generate-vercel-env.mjs",
-    "generate:vercel-api-env": "node scripts/generate-vercel-api-env.mjs"
+    "generate:vercel-api-env": "node scripts/generate-vercel-api-env.mjs",
+    "docker:api": "docker build -f Dockerfile.api -t sovereignx-api .",
+    "docker:indexer": "docker build -f Dockerfile.indexer -t sovereignx-indexer ."
   },
   "engines": {
     "node": ">=18"

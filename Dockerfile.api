@@ -1,0 +1,28 @@
+# SovereignX API — deploy on Railway / Render / Fly
+# Build: docker build -f Dockerfile.api -t sovereignx-api .
+# Run:   docker run -p 4000:4000 --env-file env/vercel.api.env sovereignx-api
+
+FROM node:20-alpine
+RUN corepack enable && corepack prepare pnpm@10.28.2 --activate
+
+WORKDIR /app
+
+COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
+COPY packages/shared/package.json ./packages/shared/
+COPY services/api/package.json ./services/api/
+
+RUN pnpm install --frozen-lockfile
+
+COPY packages/shared ./packages/shared
+COPY services/api ./services/api
+
+RUN pnpm --filter @sovereignx/shared build && pnpm --filter @sovereignx/api build
+
+WORKDIR /app/services/api
+ENV NODE_ENV=production
+
+EXPOSE 4000
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+  CMD wget -qO- http://127.0.0.1:${PORT:-4000}/api/health || exit 1
+
+CMD ["node", "dist/index.js"]

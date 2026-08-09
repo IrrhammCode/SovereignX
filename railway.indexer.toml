@@ -1,0 +1,12 @@
+# Railway — Indexer service (optional, for audit log / transfer events)
+# Second service in same project → Settings → Dockerfile Path: Dockerfile.indexer
+# Set INDEXER_PORT (Railway injects PORT automatically — map in start if needed)
+
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile.indexer"
+
+[deploy]
+healthcheckPath = "/health"
+healthcheckTimeout = 60
+restartPolicyType = "ON_FAILURE"

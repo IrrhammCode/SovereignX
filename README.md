@@ -63,6 +63,8 @@ pnpm dev:web        # :3000
 
 See [Demo Guide](./docs/DEMO.md) for the full walkthrough.
 
+**Free deploy (no Railway):** [DEPLOY-FREE.md](./docs/DEPLOY-FREE.md) — API on same Vercel project as Clerk.
+
 ## Project Structure
 
 ```

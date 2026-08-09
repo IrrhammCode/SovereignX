@@ -2,7 +2,12 @@ import { loadRootEnv } from '@sovereignx/shared/load-env';
 loadRootEnv();
 
 export const config = {
-  port: Number(process.env.API_PORT ?? 4000),
+  /** Railway/Render set PORT; local dev uses API_PORT */
+  port: Number(process.env.PORT ?? process.env.API_PORT ?? 4000),
+  corsOrigins: (process.env.ALLOWED_ORIGINS ?? '*')
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean),
   cleanverse: {
     apiId: process.env.CLEANVERSE_API_ID ?? '',
     apiKey: process.env.CLEANVERSE_API_KEY ?? '',

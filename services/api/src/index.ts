@@ -1,16 +1,10 @@
 import { loadRootEnv } from '@sovereignx/shared/load-env';
 loadRootEnv();
 
-import cors from 'cors';
-import express from 'express';
 import { config } from './config.js';
-import { apiRouter } from './routes/api.js';
+import { createApiApp } from './app.js';
 
-const app = express();
-
-app.use(cors());
-app.use(express.json());
-app.use('/api', apiRouter);
+const app = createApiApp();
 
 app.listen(config.port, () => {
   console.log(`[SovereignX API] listening on :${config.port}`);

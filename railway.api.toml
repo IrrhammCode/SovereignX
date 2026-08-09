@@ -1,0 +1,14 @@
+# Railway — API service
+# 1. New Project → Deploy from GitHub → SovereignX repo
+# 2. Settings → Build → Dockerfile Path: Dockerfile.api
+# 3. Variables → paste from env/vercel.api.env (pnpm generate:vercel-api-env)
+# 4. Networking → Generate Domain → copy URL for Vercel NEXT_PUBLIC_API_URL
+
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile.api"
+
+[deploy]
+healthcheckPath = "/api/health"
+healthcheckTimeout = 30
+restartPolicyType = "ON_FAILURE"
