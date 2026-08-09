@@ -6,10 +6,7 @@ export function LandingFooter() {
     <footer className="border-t border-white/5 px-6 py-12">
       <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-6 md:flex-row">
         <div className="flex items-center gap-3">
-          <SovereignVaultLogo size={32} />
-          <span className="font-bold text-white">
-            Sovereign<span className="text-brand-primary">X</span>
-          </span>
+          <SovereignVaultLogo size={36} />
         </div>
         <p className="text-sm text-slate-500">
           Cleanverse Build Hackathon · Track RWA · Monad Testnet

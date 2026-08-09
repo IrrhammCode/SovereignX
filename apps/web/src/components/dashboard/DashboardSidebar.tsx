@@ -40,11 +40,8 @@ export function DashboardSidebar({ active, onNavigate }: DashboardSidebarProps) 
     <aside className="flex w-full shrink-0 flex-col border-b border-emerald-500/10 bg-[#0A1628]/80 backdrop-blur-xl md:h-screen md:w-64 md:border-b-0 md:border-r">
       <div className="flex items-center justify-between gap-3 border-b border-emerald-500/10 p-4 md:p-6">
         <div className="flex items-center gap-3">
-          <SovereignVaultLogo size={36} />
+          <SovereignVaultLogo size={40} />
           <div>
-            <p className="font-bold text-white">
-              Sovereign<span className="text-brand-primary">X</span>
-            </p>
             <p className="text-[10px] uppercase tracking-widest text-slate-500">Vault Dashboard</p>
           </div>
         </div>

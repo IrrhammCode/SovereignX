@@ -17,6 +17,10 @@ const robotoMono = Roboto_Mono({
 export const metadata: Metadata = {
   title: 'SovereignX — Verified US T-Bills on Monad',
   description: 'Fractionalized US Treasury Bills with ERC-3643 compliance powered by Cleanverse',
+  icons: {
+    icon: '/sovereignx-logo.png',
+    apple: '/sovereignx-logo.png',
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

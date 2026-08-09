@@ -37,10 +37,7 @@ export function LandingNavbar() {
           )}
         >
           <Link href="/" className="flex items-center gap-2 sm:gap-3">
-            <SovereignVaultLogo size={36} />
-            <span className="text-lg font-bold tracking-wide text-white sm:text-xl">
-              Sovereign<span className="font-normal text-brand-primary">X</span>
-            </span>
+            <SovereignVaultLogo size={40} priority />
           </Link>
 
           <div className="hidden items-center gap-8 text-sm font-medium md:flex">

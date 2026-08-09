@@ -12,3 +12,7 @@ data/
 *.db
 .DS_Store
 docs.txt
+docs/DEMO-SCRIPT.md
+demo-script.md
+sovereignx.png
+apps/web/tsconfig.tsbuildinfo

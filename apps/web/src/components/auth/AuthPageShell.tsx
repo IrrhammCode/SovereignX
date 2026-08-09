@@ -18,13 +18,10 @@ export function AuthPageShell({ eyebrow, title, description, children }: AuthPag
 
       <div className="relative w-full max-w-[440px]">
         <div className="mb-8 text-center">
-          <Link href="/" className="inline-flex items-center gap-3 transition hover:opacity-90">
-            <SovereignVaultLogo size={44} />
-            <span className="text-2xl font-bold tracking-tight text-white">
-              Sovereign<span className="text-brand-primary">X</span>
-            </span>
+          <Link href="/" className="inline-flex flex-col items-center gap-2 transition hover:opacity-90">
+            <SovereignVaultLogo size={72} priority />
+            <p className="text-sm text-slate-400">Verified US T-Bills on Monad</p>
           </Link>
-          <p className="mt-3 text-sm text-slate-400">Verified US T-Bills on Monad</p>
         </div>
 
         <div className="rounded-3xl border border-emerald-500/15 bg-[#0A1628]/90 p-6 shadow-2xl shadow-black/40 backdrop-blur-xl sm:p-8">

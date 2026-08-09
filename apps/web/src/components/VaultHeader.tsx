@@ -15,9 +15,6 @@ export function VaultHeader({ isConnected, address, onConnect, onDisconnect }: V
       <div className="flex items-center gap-4">
         <SovereignVaultLogo size={56} />
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-white">
-            Sovereign<span className="text-sovereign-green glow-text">X</span>
-          </h1>
           <p className="text-sm text-gray-400">
             Fractional US T-Bills · ERC-3643 · Monad · Cleanverse
           </p>
