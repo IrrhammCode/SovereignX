@@ -63,17 +63,19 @@ export async function fetchChainTransferEvents(limit = 50): Promise<IndexedEvent
     return cachedEvents.slice(0, limit);
   }
 
-  const fromBlock = BigInt(process.env.INDEXER_FROM_BLOCK ?? '51873800');
+  const deployBlock = BigInt(process.env.INDEXER_FROM_BLOCK ?? '51873800');
+  const lookback = BigInt(process.env.INDEXER_LOOKBACK_BLOCKS ?? '10000');
   const latest = await client.getBlockNumber();
-  const chunk = 2000n;
+  const start = latest > lookback && latest - lookback > deployBlock ? latest - lookback : deployBlock;
+  const chunk = 100n;
   const events: IndexedEvent[] = [];
 
-  for (let start = fromBlock; start <= latest; start += chunk) {
-    const end = start + chunk - 1n > latest ? latest : start + chunk - 1n;
+  for (let block = start; block <= latest; block += chunk) {
+    const end = block + chunk - 1n > latest ? latest : block + chunk - 1n;
     const logs = await client.getLogs({
       address: sovx,
       event: TRANSFER,
-      fromBlock: start,
+      fromBlock: block,
       toBlock: end,
     });
     for (const log of logs) {
