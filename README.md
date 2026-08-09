@@ -523,7 +523,7 @@ Export full report: `GET /api/audit/report?format=download`
 | Resource | Link |
 |----------|------|
 | **Live Dashboard** | https://sovereign-x-web.vercel.app/dashboard |
-| **Demo Video** | _(add before submission)_ |
+| **Demo Video** | https://youtu.be/0aIXZpzsasI |
 | **Contract Explorer** | https://testnet.monadscan.com/address/0x03f6E30518347135049be7ABc901f727489E79A0 |
 
 ---
