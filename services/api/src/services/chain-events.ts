@@ -21,6 +21,9 @@ const blockTimestamps = new Map<number, number>();
 let cachedEvents: IndexedEvent[] | null = null;
 let cacheAt = 0;
 const CACHE_MS = 60_000;
+const RPC_DELAY_MS = 45;
+
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 async function blockTimestamp(blockNumber: number): Promise<number> {
   const cached = blockTimestamps.get(blockNumber);
@@ -64,7 +67,7 @@ export async function fetchChainTransferEvents(limit = 50): Promise<IndexedEvent
   }
 
   const deployBlock = BigInt(process.env.INDEXER_FROM_BLOCK ?? '51873800');
-  const lookback = BigInt(process.env.INDEXER_LOOKBACK_BLOCKS ?? '10000');
+  const lookback = BigInt(process.env.INDEXER_LOOKBACK_BLOCKS ?? '5000');
   const latest = await client.getBlockNumber();
   const start = latest > lookback && latest - lookback > deployBlock ? latest - lookback : deployBlock;
   const chunk = 100n;
@@ -81,6 +84,7 @@ export async function fetchChainTransferEvents(limit = 50): Promise<IndexedEvent
     for (const log of logs) {
       events.push(await parseTransferLog(log));
     }
+    if (block + chunk <= latest) await sleep(RPC_DELAY_MS);
   }
 
   events.sort((a, b) => b.blockNumber - a.blockNumber);
