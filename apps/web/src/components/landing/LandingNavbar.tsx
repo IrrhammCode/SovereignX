@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { useAccount } from 'wagmi';
 import { Menu, X } from 'lucide-react';
 import { SovereignVaultLogo } from '@/components/SovereignVaultLogo';
-import { ConnectWallet } from '@/components/ConnectWallet';
+import { AuthControls } from '@/components/AuthControls';
 import { cn } from '@/lib/utils';
 
 const NAV_LINKS = [
@@ -68,7 +68,7 @@ export function LandingNavbar() {
                 Open Vault
               </Link>
             )}
-            <ConnectWallet />
+            <AuthControls />
             <button
               type="button"
               className="rounded-lg p-2 text-slate-300 hover:bg-white/5 md:hidden"

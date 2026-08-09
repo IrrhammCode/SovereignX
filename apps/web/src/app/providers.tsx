@@ -1,3 +1,3 @@
 'use client';
 
-export { Web3Provider as Providers } from '@/components/Web3Provider';
+export { AppProviders as Providers } from '@/components/AppProviders';

@@ -12,7 +12,7 @@ import {
   Coins,
 } from 'lucide-react';
 import { SovereignVaultLogo } from '@/components/SovereignVaultLogo';
-import { ConnectWallet } from '@/components/ConnectWallet';
+import { AuthControls } from '@/components/AuthControls';
 import { cn } from '@/lib/utils';
 import { useAccount } from 'wagmi';
 
@@ -49,7 +49,7 @@ export function DashboardSidebar({ active, onNavigate }: DashboardSidebarProps) 
           </div>
         </div>
         <div className="md:hidden">
-          <ConnectWallet />
+          <AuthControls />
         </div>
       </div>
 
@@ -80,7 +80,7 @@ export function DashboardSidebar({ active, onNavigate }: DashboardSidebarProps) 
           <Home className="h-4 w-4" />
           Landing
         </Link>
-        <ConnectWallet showBalance />
+        <AuthControls />
         {isConnected && address && (
           <p className="truncate px-4 font-mono text-[10px] text-slate-600">{address}</p>
         )}

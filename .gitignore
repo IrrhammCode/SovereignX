@@ -3,6 +3,8 @@ dist/
 .next/
 .env
 .env.local
+env/vercel.env
+env/vercel.api.env
 contracts/out/
 contracts/cache/
 contracts/broadcast/

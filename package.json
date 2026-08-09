@@ -9,15 +9,19 @@
     "dev:api": "pnpm --filter @sovereignx/api dev",
     "dev:indexer": "pnpm --filter @sovereignx/indexer dev",
     "build": "pnpm -r build",
+    "build:web": "pnpm --filter @sovereignx/shared build && pnpm --filter @sovereignx/web build",
     "test:contracts": "cd contracts && forge test",
     "deploy:testnet": "bash scripts/deploy-testnet.sh",
     "save:deployments": "node scripts/save-deployments.mjs",
     "sync:env": "node scripts/sync-env.mjs",
     "register:validator": "node scripts/register-validator-pool.mjs",
     "deposit:dividends": "node scripts/deposit-dividend-pool.mjs",
-    "faucet:cva": "node scripts/request-cva-faucet.mjs"
+    "faucet:cva": "node scripts/request-cva-faucet.mjs",
+    "generate:vercel-env": "node scripts/generate-vercel-env.mjs",
+    "generate:vercel-api-env": "node scripts/generate-vercel-api-env.mjs"
   },
   "engines": {
     "node": ">=18"
-  }
+  },
+  "packageManager": "pnpm@10.28.2"
 }
