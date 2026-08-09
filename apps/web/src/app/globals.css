@@ -218,3 +218,47 @@ body {
   background-color: rgba(0, 163, 108, 0.1) !important;
 }
 
+/* Auth page shell — centered layout, hide duplicate Clerk headers */
+.clerk-auth-page .cl-header,
+.clerk-auth-page .cl-headerTitle,
+.clerk-auth-page .cl-headerSubtitle,
+.clerk-auth-page .cl-formHeaderTitle,
+.clerk-auth-page .cl-formHeaderSubtitle {
+  display: none !important;
+}
+
+.clerk-auth-page .cl-rootBox,
+.clerk-auth-page .cl-cardBox,
+.clerk-auth-page .cl-card {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.clerk-auth-page .cl-card,
+.clerk-auth-page .cl-cardBox {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+.clerk-auth-form .cl-main,
+.clerk-auth-form .cl-socialButtons,
+.clerk-auth-form .cl-form {
+  width: 100% !important;
+}
+
+.clerk-auth-page .cl-footer {
+  margin-top: 0.25rem !important;
+}
+
+.clerk-auth-page .cl-internal-c6d5aa[data-variant='development'] {
+  display: block !important;
+  margin-top: 0.75rem !important;
+  text-align: center !important;
+  font-size: 0.6875rem !important;
+  letter-spacing: 0.05em !important;
+}
+

@@ -118,7 +118,7 @@ export function DualAuthGate({ children, className }: DualAuthGateProps) {
             <SignInButton mode="redirect" forceRedirectUrl="/dashboard">
               <button
                 type="button"
-                className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-gray-900 hover:bg-gray-100"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-emerald-500/30 bg-[#132238] px-5 py-2.5 text-sm font-semibold text-white transition hover:border-emerald-500/50 hover:bg-emerald-500/10"
               >
                 <Mail className="h-4 w-4" />
                 Continue with Google
@@ -165,7 +165,7 @@ export function DualAuthControls({ className }: { className?: string }) {
         <SignInButton mode="redirect" forceRedirectUrl="/dashboard">
           <button
             type="button"
-            className="inline-flex items-center gap-2 rounded-full bg-white px-4 py-2 text-xs font-semibold text-gray-900 hover:bg-gray-100"
+            className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-[#132238] px-4 py-2 text-xs font-semibold text-white transition hover:border-emerald-500/50 hover:bg-emerald-500/10"
           >
             <Mail className="h-3.5 w-3.5" />
             Google Sign In

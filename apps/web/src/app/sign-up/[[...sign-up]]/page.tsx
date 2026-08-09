@@ -1,18 +1,21 @@
 import { SignUp } from '@clerk/nextjs';
-import Link from 'next/link';
-import { SovereignVaultLogo } from '@/components/SovereignVaultLogo';
-import { clerkAppearance } from '@/lib/clerk-appearance';
+import { AuthPageShell } from '@/components/auth/AuthPageShell';
+import { clerkAuthFormAppearance } from '@/lib/clerk-appearance';
 
 export default function SignUpPage() {
   return (
-    <div className="clerk-auth-page flex min-h-screen flex-col items-center justify-center px-4 py-16">
-      <Link href="/" className="mb-8 flex items-center gap-3">
-        <SovereignVaultLogo size={40} />
-        <span className="text-xl font-bold text-white">
-          Sovereign<span className="text-brand-primary">X</span>
-        </span>
-      </Link>
-      <SignUp appearance={clerkAppearance} />
-    </div>
+    <AuthPageShell
+      eyebrow="Create account"
+      title="Join SovereignX"
+      description="Register with Google or email. You'll still need MetaMask connected to access the vault."
+    >
+      <SignUp
+        appearance={clerkAuthFormAppearance}
+        routing="path"
+        path="/sign-up"
+        signInUrl="/sign-in"
+        forceRedirectUrl="/dashboard"
+      />
+    </AuthPageShell>
   );
 }
