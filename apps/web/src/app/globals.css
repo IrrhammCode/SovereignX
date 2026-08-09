@@ -66,3 +66,155 @@ body {
 }
 
 /* Verified cursor animations */
+
+/* Clerk auth — readable text on dark SovereignX theme */
+.cl-formFieldLabel,
+.cl-formFieldLabelRow label,
+.cl-formFieldLabel__label {
+  color: #e2e8f0 !important;
+  font-weight: 500 !important;
+}
+
+.cl-formFieldInput input,
+.cl-input,
+.cl-formFieldInput input[type='email'],
+.cl-formFieldInput input[type='password'],
+.cl-formFieldInput input[type='text'] {
+  color: #f8fafc !important;
+  background-color: #132238 !important;
+  border-color: rgba(0, 163, 108, 0.3) !important;
+}
+
+.cl-formFieldInput input::placeholder,
+.cl-input::placeholder {
+  color: #94a3b8 !important;
+  opacity: 1 !important;
+}
+
+.cl-dividerText,
+.cl-dividerRow span {
+  color: #94a3b8 !important;
+}
+
+.cl-dividerLine,
+.cl-dividerRow hr {
+  background-color: rgba(0, 163, 108, 0.25) !important;
+  border-color: rgba(0, 163, 108, 0.25) !important;
+}
+
+.cl-footerActionText,
+.cl-footerAction p,
+.cl-footerPages p {
+  color: #cbd5e1 !important;
+}
+
+.cl-footerActionLink,
+.cl-footerAction a,
+.cl-footerPagesLink {
+  color: #00ff88 !important;
+  font-weight: 600 !important;
+}
+
+.cl-footerActionLink:hover,
+.cl-footerPagesLink:hover {
+  color: #6ee7b7 !important;
+}
+
+.cl-headerTitle,
+.cl-headerSubtitle,
+.cl-formHeaderTitle,
+.cl-formHeaderSubtitle {
+  color: #f1f5f9 !important;
+}
+
+.cl-headerSubtitle,
+.cl-formHeaderSubtitle {
+  color: #cbd5e1 !important;
+}
+
+.cl-socialButtonsBlockButton {
+  color: #f8fafc !important;
+  background-color: #132238 !important;
+  border-color: rgba(0, 163, 108, 0.3) !important;
+}
+
+.cl-socialButtonsBlockButtonText {
+  color: #f8fafc !important;
+}
+
+.cl-internal-c6d5aa[data-variant='development'],
+.cl-badge {
+  color: #fbbf24 !important;
+  opacity: 1 !important;
+}
+
+/* "Secured by Clerk" + footer meta */
+.cl-footerPages,
+.cl-footerPages *:not(a) {
+  color: #64748b !important;
+}
+
+.cl-footerPages a {
+  color: #94a3b8 !important;
+}
+
+.cl-footerPages a:hover {
+  color: #00ff88 !important;
+}
+
+.cl-footer,
+.cl-footerPages,
+.cl-identityPreviewText {
+  color: #cbd5e1 !important;
+}
+
+.cl-modalBackdrop {
+  background: rgba(0, 0, 0, 0.75) !important;
+  backdrop-filter: blur(4px);
+}
+
+.cl-modalContent,
+.cl-card {
+  background-color: #0d2137 !important;
+  border-color: rgba(0, 163, 108, 0.2) !important;
+}
+
+.cl-formButtonPrimary {
+  color: #0a1628 !important;
+  font-weight: 700 !important;
+}
+
+.cl-formFieldHintText {
+  color: #94a3b8 !important;
+}
+
+.cl-formFieldErrorText {
+  color: #f87171 !important;
+}
+
+.cl-identityPreviewEditButton {
+  color: #00ff88 !important;
+}
+
+.cl-userButtonPopoverCard {
+  background-color: #0d2137 !important;
+  border-color: rgba(0, 163, 108, 0.2) !important;
+}
+
+.cl-userPreviewMainIdentifier {
+  color: #f8fafc !important;
+}
+
+.cl-userPreviewSecondaryIdentifier {
+  color: #94a3b8 !important;
+}
+
+.cl-userButtonPopoverActionButton,
+.cl-userButtonPopoverActionButtonText {
+  color: #e2e8f0 !important;
+}
+
+.cl-userButtonPopoverActionButton:hover {
+  background-color: rgba(0, 163, 108, 0.1) !important;
+}
+

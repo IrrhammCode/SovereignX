@@ -14,8 +14,8 @@ import { EnrollmentPanel } from '@/components/EnrollmentPanel';
 import { OraclePanel } from '@/components/OraclePanel';
 import { DividendPanel } from '@/components/dashboard/DividendPanel';
 import { ValidatorStatusPanel } from '@/components/dashboard/ValidatorStatusPanel';
+import { DualAuthGate } from '@/components/DualAuthGate';
 import { VerifiedInteractionCursor } from '@/components/VerifiedInteractionCursor';
-import { ConnectWallet } from '@/components/ConnectWallet';
 import { useSOVXBalance } from '@/lib/contracts';
 import { fetchCVI, fetchOracle } from '@/lib/api';
 import type { CVIRecord } from '@sovereignx/shared';
@@ -53,19 +53,7 @@ export default function DashboardPage() {
 
   function renderContent() {
     if (!isConnected) {
-      return (
-        <div className="flex flex-col items-center justify-center rounded-3xl border border-dashed border-emerald-500/20 py-24 text-center">
-          <p className="mb-2 text-xl font-bold text-white">Connect Your Wallet</p>
-          <p className="mb-6 max-w-md text-sm text-slate-400">
-            Connect MetaMask on <strong>Monad Testnet</strong> to view SOVX balance,
-            sync CVI via Cleanverse A-Pass, and execute compliant transfers.
-          </p>
-          <ConnectWallet />
-          <p className="mt-6 max-w-sm text-xs text-slate-500">
-            New to Monad? Add network: Chain ID 10143 · RPC https://testnet-rpc.monad.xyz
-          </p>
-        </div>
-      );
+      return null;
     }
 
     switch (tab) {
@@ -134,7 +122,9 @@ export default function DashboardPage() {
             <p className="mt-2 hidden font-mono text-xs text-slate-500 md:block">{address}</p>
           )}
         </header>
-        {renderContent()}
+        <DualAuthGate>
+          {renderContent()}
+        </DualAuthGate>
       </main>
     </div>
   );
