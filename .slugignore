@@ -1,0 +1,11 @@
+# Heroku slug — skip heavy dirs (API-only deploy)
+apps/
+contracts/
+data/
+*.db
+docs.txt
+.env
+.env.local
+env/
+.git/
+.github/

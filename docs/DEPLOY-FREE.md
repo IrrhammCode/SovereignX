@@ -51,6 +51,14 @@ API Express terpisah, **plan Free** (tidak perlu bayar Railway).
 
 ---
 
+## Opsi D · VPS kamu ($0 extra kalau sudah punya VPS)
+
+API + Indexer di VPS, frontend + Clerk tetap Vercel. **Paling recommended** kalau punya VPS — no timeout, indexer jalan 24/7.
+
+→ [DEPLOY-VPS.md](./DEPLOY-VPS.md)
+
+---
+
 ## Opsi C · Lokal demo ($0)
 
 Untuk hackathon submission video:

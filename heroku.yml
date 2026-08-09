@@ -1,0 +1,7 @@
+# Heroku Container deploy (alternative to Procfile + buildpack)
+# heroku stack:set container
+# git push heroku main
+
+build:
+  docker:
+    web: Dockerfile.api

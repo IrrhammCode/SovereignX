@@ -1,0 +1,35 @@
+# SovereignX API + Indexer on VPS
+# Usage: docker compose -f docker-compose.vps.yml up -d --build
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api
+    restart: unless-stopped
+    ports:
+      - "4000:4000"
+    env_file:
+      - .env.api
+    environment:
+      PORT: "4000"
+      INDEXER_URL: http://indexer:4001
+    depends_on:
+      - indexer
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:4000/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  indexer:
+    build:
+      context: .
+      dockerfile: Dockerfile.indexer
+    restart: unless-stopped
+    ports:
+      - "4001:4001"
+    env_file:
+      - .env.api
+    environment:
+      PORT: "4001"

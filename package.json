@@ -20,7 +20,8 @@
     "generate:vercel-env": "node scripts/generate-vercel-env.mjs",
     "generate:vercel-api-env": "node scripts/generate-vercel-api-env.mjs",
     "docker:api": "docker build -f Dockerfile.api -t sovereignx-api .",
-    "docker:indexer": "docker build -f Dockerfile.indexer -t sovereignx-indexer ."
+    "docker:indexer": "docker build -f Dockerfile.indexer -t sovereignx-indexer .",
+    "heroku-postbuild": "pnpm --filter @sovereignx/shared build && pnpm --filter @sovereignx/api build"
   },
   "engines": {
     "node": ">=18"

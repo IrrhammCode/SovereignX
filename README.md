@@ -65,6 +65,10 @@ See [Demo Guide](./docs/DEMO.md) for the full walkthrough.
 
 **Free deploy (no Railway):** [DEPLOY-FREE.md](./docs/DEPLOY-FREE.md) — API on same Vercel project as Clerk.
 
+**VPS deploy:** [DEPLOY-VPS.md](./docs/DEPLOY-VPS.md) — API on your VPS, frontend stays on Vercel.
+
+**Heroku (GitHub Student $13/mo):** [DEPLOY-HEROKU.md](./docs/DEPLOY-HEROKU.md)
+
 ## Project Structure
 
 ```
